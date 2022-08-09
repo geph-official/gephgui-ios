@@ -1,0 +1,845 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9B77DA9A27F0DEE7001D323F /* Connect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B77DA9927F0DEE7001D323F /* Connect.swift */; };
+		9B77DA9C27F0DEFA001D323F /* Sync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B77DA9B27F0DEFA001D323F /* Sync.swift */; };
+		9B7886B627E8DDB100D9555F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886B527E8DDB100D9555F /* AppDelegate.swift */; };
+		9B7886B827E8DDB100D9555F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886B727E8DDB100D9555F /* SceneDelegate.swift */; };
+		9B7886BA27E8DDB100D9555F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886B927E8DDB100D9555F /* ViewController.swift */; };
+		9B7886BD27E8DDB100D9555F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B7886BB27E8DDB100D9555F /* Main.storyboard */; };
+		9B7886BF27E8DDB200D9555F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9B7886BE27E8DDB200D9555F /* Assets.xcassets */; };
+		9B7886C227E8DDB200D9555F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B7886C027E8DDB200D9555F /* LaunchScreen.storyboard */; };
+		9B7886CD27E8DDB300D9555F /* gephTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886CC27E8DDB300D9555F /* gephTests.swift */; };
+		9B7886D727E8DDB300D9555F /* gephUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886D627E8DDB300D9555F /* gephUITests.swift */; };
+		9B7886D927E8DDB300D9555F /* gephUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886D827E8DDB300D9555F /* gephUITestsLaunchTests.swift */; };
+		9B7886EA27EA506F00D9555F /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B7886E927EA506F00D9555F /* NetworkExtension.framework */; };
+		9B7886F027EA517C00D9555F /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B7886E927EA506F00D9555F /* NetworkExtension.framework */; };
+		9B7886F327EA517C00D9555F /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886F227EA517C00D9555F /* PacketTunnelProvider.swift */; };
+		9B7886F827EA517C00D9555F /* daemon.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9B7886EF27EA517C00D9555F /* daemon.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9BABD08128A06456008F0FF6 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BABD08028A06456008F0FF6 /* Utilities.swift */; };
+		9BABD08228A064C7008F0FF6 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BABD08028A06456008F0FF6 /* Utilities.swift */; };
+		9BC66060289AE16E00ED8C88 /* build in Resources */ = {isa = PBXBuildFile; fileRef = 9BC6605F289AE16E00ED8C88 /* build */; };
+		9BCDC88627EBADCE0011290C /* test.html in Resources */ = {isa = PBXBuildFile; fileRef = 9BCDC88527EBADCE0011290C /* test.html */; };
+		9BE47CD027EE68630066390F /* libgeph4client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE47CCE27EE1F6F0066390F /* libgeph4client.a */; };
+		9BE47CD127EE687D0066390F /* libgeph4client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE47CCE27EE1F6F0066390F /* libgeph4client.a */; };
+		9BE47CDE27EFD49A0066390F /* ConfigurationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE47CDD27EFD49A0066390F /* ConfigurationService.swift */; };
+		9BFBBF172826FC8B00677CD3 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BFBBF162826FC8500677CD3 /* libresolv.tbd */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9B7886C927E8DDB300D9555F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9B7886AA27E8DDB100D9555F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9B7886B127E8DDB100D9555F;
+			remoteInfo = geph;
+		};
+		9B7886D327E8DDB300D9555F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9B7886AA27E8DDB100D9555F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9B7886B127E8DDB100D9555F;
+			remoteInfo = geph;
+		};
+		9B7886F627EA517C00D9555F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9B7886AA27E8DDB100D9555F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9B7886EE27EA517C00D9555F;
+			remoteInfo = daemon;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9B7886FC27EA517C00D9555F /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				9B7886F827EA517C00D9555F /* daemon.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		9B77DA9927F0DEE7001D323F /* Connect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connect.swift; sourceTree = "<group>"; };
+		9B77DA9B27F0DEFA001D323F /* Sync.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sync.swift; sourceTree = "<group>"; };
+		9B7886B227E8DDB100D9555F /* Geph.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Geph.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B7886B527E8DDB100D9555F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		9B7886B727E8DDB100D9555F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		9B7886B927E8DDB100D9555F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		9B7886BC27E8DDB100D9555F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		9B7886BE27E8DDB200D9555F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9B7886C127E8DDB200D9555F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		9B7886C327E8DDB200D9555F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9B7886C827E8DDB300D9555F /* GephTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GephTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B7886CC27E8DDB300D9555F /* gephTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gephTests.swift; sourceTree = "<group>"; };
+		9B7886D227E8DDB300D9555F /* GephUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GephUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B7886D627E8DDB300D9555F /* gephUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gephUITests.swift; sourceTree = "<group>"; };
+		9B7886D827E8DDB300D9555F /* gephUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gephUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		9B7886E727EA506F00D9555F /* geph.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = geph.entitlements; sourceTree = "<group>"; };
+		9B7886E927EA506F00D9555F /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		9B7886EF27EA517C00D9555F /* daemon.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = daemon.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B7886F227EA517C00D9555F /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
+		9B7886F427EA517C00D9555F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9B7886F527EA517C00D9555F /* daemon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = daemon.entitlements; sourceTree = "<group>"; };
+		9BABD08028A06456008F0FF6 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Utilities.swift; path = Geph/Utilities.swift; sourceTree = SOURCE_ROOT; };
+		9BC6605F289AE16E00ED8C88 /* build */ = {isa = PBXFileReference; lastKnownFileType = folder; path = build; sourceTree = "<group>"; };
+		9BCDC88527EBADCE0011290C /* test.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = test.html; sourceTree = "<group>"; };
+		9BE47CCE27EE1F6F0066390F /* libgeph4client.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgeph4client.a; path = libGeph4Client/libgeph4client.a; sourceTree = "<group>"; };
+		9BE47CDD27EFD49A0066390F /* ConfigurationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationService.swift; sourceTree = "<group>"; };
+		9BFBBF162826FC8500677CD3 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9B7886AF27E8DDB100D9555F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B7886EA27EA506F00D9555F /* NetworkExtension.framework in Frameworks */,
+				9BE47CD027EE68630066390F /* libgeph4client.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B7886C527E8DDB300D9555F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B7886CF27E8DDB300D9555F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B7886EC27EA517C00D9555F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B7886F027EA517C00D9555F /* NetworkExtension.framework in Frameworks */,
+				9BE47CD127EE687D0066390F /* libgeph4client.a in Frameworks */,
+				9BFBBF172826FC8B00677CD3 /* libresolv.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9B7886A927E8DDB100D9555F = {
+			isa = PBXGroup;
+			children = (
+				9BC6605F289AE16E00ED8C88 /* build */,
+				9B7886B427E8DDB100D9555F /* geph */,
+				9B7886CB27E8DDB300D9555F /* gephTests */,
+				9B7886D527E8DDB300D9555F /* gephUITests */,
+				9B7886F127EA517C00D9555F /* daemon */,
+				9B7886B327E8DDB100D9555F /* Products */,
+				9B7886E827EA506F00D9555F /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		9B7886B327E8DDB100D9555F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9B7886B227E8DDB100D9555F /* Geph.app */,
+				9B7886C827E8DDB300D9555F /* GephTests.xctest */,
+				9B7886D227E8DDB300D9555F /* GephUITests.xctest */,
+				9B7886EF27EA517C00D9555F /* daemon.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9B7886B427E8DDB100D9555F /* geph */ = {
+			isa = PBXGroup;
+			children = (
+				9B7886E727EA506F00D9555F /* geph.entitlements */,
+				9B7886B527E8DDB100D9555F /* AppDelegate.swift */,
+				9B7886B727E8DDB100D9555F /* SceneDelegate.swift */,
+				9B7886B927E8DDB100D9555F /* ViewController.swift */,
+				9B77DA9927F0DEE7001D323F /* Connect.swift */,
+				9BABD08028A06456008F0FF6 /* Utilities.swift */,
+				9B77DA9B27F0DEFA001D323F /* Sync.swift */,
+				9BCDC88527EBADCE0011290C /* test.html */,
+				9B7886BB27E8DDB100D9555F /* Main.storyboard */,
+				9B7886BE27E8DDB200D9555F /* Assets.xcassets */,
+				9B7886C027E8DDB200D9555F /* LaunchScreen.storyboard */,
+				9B7886C327E8DDB200D9555F /* Info.plist */,
+				9BE47CDD27EFD49A0066390F /* ConfigurationService.swift */,
+			);
+			path = geph;
+			sourceTree = "<group>";
+		};
+		9B7886CB27E8DDB300D9555F /* gephTests */ = {
+			isa = PBXGroup;
+			children = (
+				9B7886CC27E8DDB300D9555F /* gephTests.swift */,
+			);
+			path = gephTests;
+			sourceTree = "<group>";
+		};
+		9B7886D527E8DDB300D9555F /* gephUITests */ = {
+			isa = PBXGroup;
+			children = (
+				9B7886D627E8DDB300D9555F /* gephUITests.swift */,
+				9B7886D827E8DDB300D9555F /* gephUITestsLaunchTests.swift */,
+			);
+			path = gephUITests;
+			sourceTree = "<group>";
+		};
+		9B7886E827EA506F00D9555F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9BFBBF162826FC8500677CD3 /* libresolv.tbd */,
+				9BE47CCE27EE1F6F0066390F /* libgeph4client.a */,
+				9B7886E927EA506F00D9555F /* NetworkExtension.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9B7886F127EA517C00D9555F /* daemon */ = {
+			isa = PBXGroup;
+			children = (
+				9B7886F227EA517C00D9555F /* PacketTunnelProvider.swift */,
+				9B7886F427EA517C00D9555F /* Info.plist */,
+				9B7886F527EA517C00D9555F /* daemon.entitlements */,
+			);
+			path = daemon;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9B7886B127E8DDB100D9555F /* Geph */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9B7886DC27E8DDB300D9555F /* Build configuration list for PBXNativeTarget "Geph" */;
+			buildPhases = (
+				9B7886AE27E8DDB100D9555F /* Sources */,
+				9B7886AF27E8DDB100D9555F /* Frameworks */,
+				9B7886B027E8DDB100D9555F /* Resources */,
+				9B7886FC27EA517C00D9555F /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9B7886F727EA517C00D9555F /* PBXTargetDependency */,
+			);
+			name = Geph;
+			productName = geph;
+			productReference = 9B7886B227E8DDB100D9555F /* Geph.app */;
+			productType = "com.apple.product-type.application";
+		};
+		9B7886C727E8DDB300D9555F /* GephTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9B7886DF27E8DDB300D9555F /* Build configuration list for PBXNativeTarget "GephTests" */;
+			buildPhases = (
+				9B7886C427E8DDB300D9555F /* Sources */,
+				9B7886C527E8DDB300D9555F /* Frameworks */,
+				9B7886C627E8DDB300D9555F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9B7886CA27E8DDB300D9555F /* PBXTargetDependency */,
+			);
+			name = GephTests;
+			productName = gephTests;
+			productReference = 9B7886C827E8DDB300D9555F /* GephTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		9B7886D127E8DDB300D9555F /* GephUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9B7886E227E8DDB300D9555F /* Build configuration list for PBXNativeTarget "GephUITests" */;
+			buildPhases = (
+				9B7886CE27E8DDB300D9555F /* Sources */,
+				9B7886CF27E8DDB300D9555F /* Frameworks */,
+				9B7886D027E8DDB300D9555F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9B7886D427E8DDB300D9555F /* PBXTargetDependency */,
+			);
+			name = GephUITests;
+			productName = gephUITests;
+			productReference = 9B7886D227E8DDB300D9555F /* GephUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		9B7886EE27EA517C00D9555F /* daemon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9B7886F927EA517C00D9555F /* Build configuration list for PBXNativeTarget "daemon" */;
+			buildPhases = (
+				9B7886EB27EA517C00D9555F /* Sources */,
+				9B7886EC27EA517C00D9555F /* Frameworks */,
+				9B7886ED27EA517C00D9555F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = daemon;
+			productName = daemon;
+			productReference = 9B7886EF27EA517C00D9555F /* daemon.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9B7886AA27E8DDB100D9555F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastSwiftUpdateCheck = 1320;
+				LastUpgradeCheck = 1320;
+				TargetAttributes = {
+					9B7886B127E8DDB100D9555F = {
+						CreatedOnToolsVersion = 13.2.1;
+					};
+					9B7886C727E8DDB300D9555F = {
+						CreatedOnToolsVersion = 13.2.1;
+						TestTargetID = 9B7886B127E8DDB100D9555F;
+					};
+					9B7886D127E8DDB300D9555F = {
+						CreatedOnToolsVersion = 13.2.1;
+						TestTargetID = 9B7886B127E8DDB100D9555F;
+					};
+					9B7886EE27EA517C00D9555F = {
+						CreatedOnToolsVersion = 13.2.1;
+					};
+				};
+			};
+			buildConfigurationList = 9B7886AD27E8DDB100D9555F /* Build configuration list for PBXProject "Geph" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 9B7886A927E8DDB100D9555F;
+			productRefGroup = 9B7886B327E8DDB100D9555F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9B7886B127E8DDB100D9555F /* Geph */,
+				9B7886C727E8DDB300D9555F /* GephTests */,
+				9B7886D127E8DDB300D9555F /* GephUITests */,
+				9B7886EE27EA517C00D9555F /* daemon */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9B7886B027E8DDB100D9555F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B7886C227E8DDB200D9555F /* LaunchScreen.storyboard in Resources */,
+				9B7886BF27E8DDB200D9555F /* Assets.xcassets in Resources */,
+				9BC66060289AE16E00ED8C88 /* build in Resources */,
+				9B7886BD27E8DDB100D9555F /* Main.storyboard in Resources */,
+				9BCDC88627EBADCE0011290C /* test.html in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B7886C627E8DDB300D9555F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B7886D027E8DDB300D9555F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B7886ED27EA517C00D9555F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9B7886AE27E8DDB100D9555F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B7886BA27E8DDB100D9555F /* ViewController.swift in Sources */,
+				9B7886B627E8DDB100D9555F /* AppDelegate.swift in Sources */,
+				9BABD08128A06456008F0FF6 /* Utilities.swift in Sources */,
+				9B7886B827E8DDB100D9555F /* SceneDelegate.swift in Sources */,
+				9BE47CDE27EFD49A0066390F /* ConfigurationService.swift in Sources */,
+				9B77DA9C27F0DEFA001D323F /* Sync.swift in Sources */,
+				9B77DA9A27F0DEE7001D323F /* Connect.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B7886C427E8DDB300D9555F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B7886CD27E8DDB300D9555F /* gephTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B7886CE27E8DDB300D9555F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B7886D927E8DDB300D9555F /* gephUITestsLaunchTests.swift in Sources */,
+				9B7886D727E8DDB300D9555F /* gephUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B7886EB27EA517C00D9555F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BABD08228A064C7008F0FF6 /* Utilities.swift in Sources */,
+				9B7886F327EA517C00D9555F /* PacketTunnelProvider.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9B7886CA27E8DDB300D9555F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9B7886B127E8DDB100D9555F /* Geph */;
+			targetProxy = 9B7886C927E8DDB300D9555F /* PBXContainerItemProxy */;
+		};
+		9B7886D427E8DDB300D9555F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9B7886B127E8DDB100D9555F /* Geph */;
+			targetProxy = 9B7886D327E8DDB300D9555F /* PBXContainerItemProxy */;
+		};
+		9B7886F727EA517C00D9555F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9B7886EE27EA517C00D9555F /* daemon */;
+			targetProxy = 9B7886F627EA517C00D9555F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		9B7886BB27E8DDB100D9555F /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9B7886BC27E8DDB100D9555F /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		9B7886C027E8DDB200D9555F /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9B7886C127E8DDB200D9555F /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		9B7886DA27E8DDB300D9555F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		9B7886DB27E8DDB300D9555F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		9B7886DD27E8DDB300D9555F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = geph/geph.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
+				INFOPLIST_FILE = geph/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Geph;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = NO;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
+				MARKETING_VERSION = 0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = geph.io;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/libGeph4Client/BridgingHeader.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9B7886DE27E8DDB300D9555F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = geph/geph.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
+				INFOPLIST_FILE = geph/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Geph;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = NO;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
+				MARKETING_VERSION = 0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = geph.io;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/libGeph4Client/BridgingHeader.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		9B7886E027E8DDB300D9555F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = geph.io.gephTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/BridgingHeader.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Geph.app/Geph";
+			};
+			name = Debug;
+		};
+		9B7886E127E8DDB300D9555F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = geph.io.gephTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/BridgingHeader.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Geph.app/Geph";
+			};
+			name = Release;
+		};
+		9B7886E327E8DDB300D9555F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = geph.io.gephUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/BridgingHeader.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = geph;
+			};
+			name = Debug;
+		};
+		9B7886E427E8DDB300D9555F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = geph.io.gephUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/BridgingHeader.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = geph;
+			};
+			name = Release;
+		};
+		9B7886FA27EA517C00D9555F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = daemon/daemon.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
+				INFOPLIST_FILE = daemon/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = daemon;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/libGeph4Client/",
+				);
+				MARKETING_VERSION = 0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = geph.io.daemon;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/libGeph4Client/BridgingHeader.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9B7886FB27EA517C00D9555F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = daemon/daemon.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
+				INFOPLIST_FILE = daemon/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = daemon;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/libGeph4Client/",
+				);
+				MARKETING_VERSION = 0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = geph.io.daemon;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/libGeph4Client/BridgingHeader.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9B7886AD27E8DDB100D9555F /* Build configuration list for PBXProject "Geph" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B7886DA27E8DDB300D9555F /* Debug */,
+				9B7886DB27E8DDB300D9555F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9B7886DC27E8DDB300D9555F /* Build configuration list for PBXNativeTarget "Geph" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B7886DD27E8DDB300D9555F /* Debug */,
+				9B7886DE27E8DDB300D9555F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9B7886DF27E8DDB300D9555F /* Build configuration list for PBXNativeTarget "GephTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B7886E027E8DDB300D9555F /* Debug */,
+				9B7886E127E8DDB300D9555F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9B7886E227E8DDB300D9555F /* Build configuration list for PBXNativeTarget "GephUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B7886E327E8DDB300D9555F /* Debug */,
+				9B7886E427E8DDB300D9555F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9B7886F927EA517C00D9555F /* Build configuration list for PBXNativeTarget "daemon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B7886FA27EA517C00D9555F /* Debug */,
+				9B7886FB27EA517C00D9555F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9B7886AA27E8DDB100D9555F /* Project object */;
+}
