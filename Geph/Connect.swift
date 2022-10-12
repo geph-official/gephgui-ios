@@ -23,7 +23,22 @@ func start_daemon(_ message: String, _ manager: NETunnelProviderManager) -> Stri
         eprint("the connection looks like", manager.connection)
         assert(manager.isEnabled)
         try manager.connection.startVPNTunnel(options: args_map)
+        
+        Thread.detachNewThread({
+            while manager.connection.status != NEVPNStatus.connected {
+                eprint("connecting...")
+                eprint(manager.connection.status)
+                Thread.sleep(forTimeInterval: TimeInterval(5))
+                do {
+                    try manager.connection.startVPNTunnel(options: args_map)
+                } catch {
+                    eprint("OH NO i DIEEEED!", error.localizedDescription)
+                }
+            }
+        })
+        
         eprint("the vpn started lol")
+        eprint(manager.connection.status)
         return ""
     } catch {
         eprint("OH NO i DIEEEED!", error.localizedDescription)
@@ -68,11 +83,6 @@ func parse_message(_ message: String) -> String {
                 args_arr.append("--exclude-prc")
             }
 
-//            let autoproxy = connect_info["autoproxy"]! as! Bool
-//            if autoproxy {
-//                args_arr.append("--autoproxy")
-//            }
-
             let listen_all = connect_info["listen_all"]! as! Bool
             if listen_all {
                 args_arr.append("--socks5-listen")
@@ -80,11 +90,11 @@ func parse_message(_ message: String) -> String {
                 args_arr.append("--http-listen")
                 args_arr.append("0.0.0.0:9910")
             }
-            
-            args_arr.append("--sticky-bridges")
-            
-//            args_arr.append("--stats-listen") // debugging
-//            args_arr.append("0.0.0.0:9809") // debugging
+
+//            args_arr.append("--stats-listen")
+//            args_arr.append("0.0.0.0:9809")
+
+//            args_arr.append("--sticky-bridges")
             
             let ret = try jsonify(args_arr)
             return ret

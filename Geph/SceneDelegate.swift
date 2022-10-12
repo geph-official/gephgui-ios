@@ -36,6 +36,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
+//        eprint("scene will enter foreground!")
+//        let vc = ViewController.instance
+//        vc.reloadWebView()
+
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
     }

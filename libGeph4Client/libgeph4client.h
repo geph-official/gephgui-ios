@@ -14,3 +14,5 @@ int download_packet(unsigned char *buffer, int buflen);
 int check_bridges(unsigned char *buffer, int buflen);
 
 int get_logs(unsigned char *buffer, int buflen);
+
+int test_listening_ports();

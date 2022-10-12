@@ -21,19 +21,17 @@ var sync_global_obj = SyncStatus.Pending;
 func handle_start_sync_status(_ message: String) -> Int {
 //  eprint(sync_global_obj)
     Thread.detachNewThread({ () -> () in
-        lock.lock();
-        sync_global_obj = sync_status(message);
+        lock.lock()
+        defer {lock.unlock()}
+        sync_global_obj = sync_status(message)
     //  eprint(sync_global_obj)
-        lock.unlock();
     })
     return 1 // dummy value
 }
 
 
 func handle_check_sync_status(_ message: String) -> SyncStatus {
-    while (!lock.try()) {
-        Thread.sleep(forTimeInterval: 0.1)
-    }
+    lock.lock()
     let ret = sync_global_obj
     lock.unlock()
     return ret

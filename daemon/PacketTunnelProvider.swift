@@ -13,7 +13,8 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
     
     override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
         NSLog("TUNNEL STARTED!")
-        
+        let defaults = UserDefaults.standard
+        var args = ""
         //        completionHandler(nil)
         //        print("It's me, Geph!!!")
         // start geph
@@ -29,10 +30,20 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 //                })
 
         if let options_unwrapped = options {
-            if let args = options_unwrapped["args"] {
+            NSLog("called from gephgui")
+            if let rgs = options_unwrapped["args"] {
+                args = rgs.description
+                defaults.set(rgs.description, forKey: "args")
+            }
+        } else {
+            NSLog("called from settings")
+            let rgs = defaults.string(forKey: "args")!
+            args = rgs
+        }
+        
                 NSLog("just before starting the geph thread")
                 Thread.detachNewThread({
-                    NSLog("ARGS: %@", args.description)
+                    NSLog("ARGS: %@", args)
                     NSLog("about to call geph, wish me luck")
                     let res = call_geph_wrapper(args.description)
                     NSLog("Geph returned?! %@", res)
@@ -41,6 +52,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                 // logs loop
                 Thread.detachNewThread({
                     NSLog("STARTED LOGS LOOP")
+                    
                     var buffer = [UInt8](repeating: 0, count: 2000)
                     while true {
                         let len = logs_from_geph(buffer: &buffer)
@@ -50,19 +62,20 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                         }
                     }
                 })
-
-                // call get_bridges in a loop until we have the list of bridges
-                var bridges_val = get_bridges_wrapper()
-                while bridges_val.1 <= 2 {             // NOTE: an empty array of bridges has length 2, not 0
-                    NSLog("no bridges yet")
-                    Thread.sleep(forTimeInterval: 1)
-
-                    bridges_val = get_bridges_wrapper()
-                    if bridges_val.1 == -1 {
-                        NSLog("error getting bridges! error!")
-                    }
-                }
-                NSLog("got bridges! %@", bridges_val.0)
+        
+        
+//                // call get_bridges in a loop until we have the list of bridges
+//                var bridges_val = get_bridges_wrapper()
+//                while bridges_val.1 <= 2 {             // NOTE: an empty array of bridges has length 2, not 0
+//                    NSLog("no bridges yet")
+//                    Thread.sleep(forTimeInterval: 1)
+//
+//                    bridges_val = get_bridges_wrapper()
+//                    if bridges_val.1 == -1 {
+//                        NSLog("error getting bridges! error!")
+//                    }
+//                }
+//                NSLog("got bridges! %@", bridges_val.0)
 
                 // start packet tunnel
                 let settings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: "1");
@@ -70,11 +83,11 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                 let subnetMasks: [String] = ["255.255.255.255"];
                 settings.ipv4Settings = NEIPv4Settings(addresses: addresses, subnetMasks: subnetMasks);
                 settings.ipv4Settings?.includedRoutes = [NEIPv4Route.default()]; // all routes
-                settings.ipv4Settings?.excludedRoutes = bridges_val.0
+//                settings.ipv4Settings?.excludedRoutes = bridges_val.0
                 settings.dnsSettings = .init(servers: ["1.1.1.1"])
                 settings.mtu = 1280
                 
-                setTunnelNetworkSettings(settings);
+                setTunnelNetworkSettings(settings)
                 
                 // start vpn!
                 completionHandler(nil);
@@ -107,9 +120,11 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                         }
                     }
                 })
+                
+//                // test 0.0.0.0
+//                test_listening_ports()
             }
-        }
-    }
+        
     
     override func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
         // Add code here to start the process of stopping the tunnel.

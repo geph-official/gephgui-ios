@@ -10,17 +10,18 @@ import WebKit
 import NetworkExtension
 
 
-// TODOs:
-// 1. Handle news page
-// 2. Handle exclude apps
-// 3. Free c-string arrays created by Rust
 
-// 1. Make observer to sync with settings page
-// 2. Handle registering/deleting vpn from preferences
 public let service : VPNConfigurationService = .shared
 
 class ViewController: UIViewController {
-
+//    override func loadView() {
+////        view = webView
+//        let rect = CGRect.init(x: 0.0, y: 0.0, width: 200.0, height: 200.0)
+//        view = UIView.init(frame: rect)
+//        view.backgroundColor = .systemGreen
+//        view.contentMode = .scaleAspectFit
+//        view.contentMode = .center
+//    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -60,23 +61,38 @@ class ViewController: UIViewController {
         
         // add webview & load geph
         view.addSubview(webView)
+        webView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0.0).isActive = true
+        webView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0.0).isActive = true
+        webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0.0).isActive = true
+        webView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0.0).isActive = true
+
+        
         if let htmlPath = Bundle.main.url(forResource: "index", withExtension: "html", subdirectory: "build"){
             print(htmlPath)
             webView.loadFileURL( htmlPath, allowingReadAccessTo: htmlPath.deletingLastPathComponent());
         }
+        
+       let center = NotificationCenter.default
+        center.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: nil) { Notification in
+            eprint("refreshing")
+            self.webView.reload()
+        }
     }
-
+    
     // deinit and remove webview stuff to avoid memory leaks (unsure if this is necessary)
     deinit {
         eprint("deallocating")
+        
         let ucc = webView.configuration.userContentController
         ucc.removeAllUserScripts()
         ucc.removeAllScriptMessageHandlers()
     }
     
     private lazy var webView: WKWebView = {
-        let webView = WKWebView(frame: view.frame)
-        webView.translatesAutoresizingMaskIntoConstraints = true
+        let webView = WKWebView()
+//        let webView = WKWebView()
+        webView.translatesAutoresizingMaskIntoConstraints = false
+
         return webView
     }()
     
@@ -97,7 +113,6 @@ class ViewController: UIViewController {
             return manager
         } else {
             let man = managers[0]
-            
             man.isEnabled = true
             try await man.saveToPreferences()
             return man
@@ -156,28 +171,26 @@ extension ViewController: WKScriptMessageHandlerWithReply {
         }
         
         else if message.name == "start_binder_proxy" {
+            defer {replyHandler( "", nil )}
             eprint(message.name)
             handle_start_binder_proxy()
-            eprint("yobig")
-            replyHandler( "", nil )
         }
         
         else if message.name == "stop_binder_proxy", let messageBody = message.body as? String {
+            defer {replyHandler( "", nil )}
             eprint(message.name)
             eprint(messageBody)
-            replyHandler("Boolayah!", nil)
         }
         
         else if message.name == "start_daemon", let messageBody = message.body as? String {
             eprint(message.name)
             eprint(messageBody)
             Task {
+                defer {replyHandler( "", nil )}
                 let manager = try await getManager()
                 let res = start_daemon(messageBody, manager)
-                if res == "" {
-                    replyHandler("", nil)
-                } else {
-                    replyHandler("", res)
+                if res != "" {
+                    eprint(res)
                 }
             }
         }
@@ -186,24 +199,24 @@ extension ViewController: WKScriptMessageHandlerWithReply {
             eprint(message.name)
             eprint(messageBody)
             Task {
+                defer {replyHandler( "", nil )}
                 let manager = try await getManager()
                 stop_daemon(manager)
-                replyHandler("", nil)
             }
         }
         
         else if message.name == "export_logs", let messageBody = message.body as? String {
+            defer {replyHandler( "", nil )}
             eprint(message.name)
             eprint(messageBody)
             let logs_url = URL(string: "http://localhost:9809/logs")!
             UIApplication.shared.open(logs_url)
-            replyHandler( "", nil )
         }
         
         else if message.name == "set_conversion_factor", let messageBody = message.body as? String {
+            defer {replyHandler( "", nil )}
             eprint("setting conversion factor (not really)")
             eprint("input = ", messageBody);
-            replyHandler( "", nil )
         }
     }
 }
