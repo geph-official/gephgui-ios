@@ -9,18 +9,32 @@ import NetworkExtension
 import QuartzCore
 
 
+func call_geph_wrapper(_ fun: String, _ args: String) throws -> String {
+    let buflen = 2000
+    var buffer = [UInt8](repeating: 0, count: buflen)
+    let retcode = call_geph(fun, args, &buffer, Int32(buflen))
+    
+    let data = Data(buffer.prefix(Int(retcode)))
+    let decoder = JSONDecoder()
+    let ret = try decoder.decode(String.self, from: data)
+    
+    if retcode < 0 {
+        throw ret
+    } else {
+        return ret
+    }
+}
+
 class PacketTunnelProvider: NEPacketTunnelProvider {
     
     override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
         NSLog("TUNNEL STARTED!")
         let defaults = UserDefaults.standard
         var args = ""
-        //        completionHandler(nil)
-        //        print("It's me, Geph!!!")
         // start geph
-        // options should be ["args" : "["geph4-client", "connect", "--username", ...]"],
-        // that is, a mapping of the string "args" to an NSString that is a serialized
-        // JSON array of args we pass to geph
+        // options should be ["args" : "["--username", ...]"],
+        // which is a mapping of the string "args" to an NSString,
+        // which is a serialized JSON array of args we pass to geph
         
 //                Thread.detachNewThread({
 //                    while(true) {
@@ -41,89 +55,89 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
             args = rgs
         }
         
-                NSLog("just before starting the geph thread")
-                Thread.detachNewThread({
-                    NSLog("ARGS: %@", args)
-                    NSLog("about to call geph, wish me luck")
-                    let res = call_geph_wrapper(args.description)
-                    NSLog("Geph returned?! %@", res)
-                })
-                
-                // logs loop
-                Thread.detachNewThread({
-                    NSLog("STARTED LOGS LOOP")
-                    
-                    var buffer = [UInt8](repeating: 0, count: 2000)
-                    while true {
-                        let len = logs_from_geph(buffer: &buffer)
-                        if len > 0 {
-                            let msg = String(bytesNoCopy: &buffer, length: len, encoding: .utf8, freeWhenDone: false)!
-                            NSLog(msg)
-                        }
-                    }
-                })
+        NSLog("just before starting the geph thread")
+        Thread.detachNewThread({
+            do {
+                NSLog("ARGS: %@", args)
+                NSLog("about to call geph, wish me luck")
+                let res = try call_geph_wrapper("connect", args.description)
+                NSLog("Geph returned?! %@", res)
+            } catch {
+                NSLog("Geph returned with error: %@", error.localizedDescription)
+            }
+        })
         
+        // logs loop
+        Thread.detachNewThread({
+            NSLog("STARTED LOGS LOOP")
+            
+            var buffer = [UInt8](repeating: 0, count: 2000)
+            while true {
+                let len = logs_from_geph(buffer: &buffer)
+                if len > 0 {
+                    let msg = String(bytesNoCopy: &buffer, length: len, encoding: .utf8, freeWhenDone: false)!
+                    NSLog(msg)
+                }
+            }
+        })
         
-//                // call get_bridges in a loop until we have the list of bridges
-//                var bridges_val = get_bridges_wrapper()
-//                while bridges_val.1 <= 2 {             // NOTE: an empty array of bridges has length 2, not 0
-//                    NSLog("no bridges yet")
-//                    Thread.sleep(forTimeInterval: 1)
+//        // call get_bridges in a loop until we have the list of bridges
+//        var bridges_val = get_bridges_wrapper()
+//        while bridges_val.1 <= 2 {             // NOTE: an empty array of bridges has length 2, not 0
+//            NSLog("no bridges yet")
+//            Thread.sleep(forTimeInterval: 1)
 //
-//                    bridges_val = get_bridges_wrapper()
-//                    if bridges_val.1 == -1 {
-//                        NSLog("error getting bridges! error!")
-//                    }
-//                }
-//                NSLog("got bridges! %@", bridges_val.0)
+//            bridges_val = get_bridges_wrapper()
+//            if bridges_val.1 == -1 {
+//                NSLog("error getting bridges! error!")
+//            }
+//        }
+//        NSLog("got bridges! %@", bridges_val.0)
 
-                // start packet tunnel
-                let settings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: "1");
-                let addresses: [String] = ["123.123.123.123"];
-                let subnetMasks: [String] = ["255.255.255.255"];
-                settings.ipv4Settings = NEIPv4Settings(addresses: addresses, subnetMasks: subnetMasks);
-                settings.ipv4Settings?.includedRoutes = [NEIPv4Route.default()]; // all routes
-//                settings.ipv4Settings?.excludedRoutes = bridges_val.0
-                settings.dnsSettings = .init(servers: ["1.1.1.1"])
-                settings.mtu = 1280
-                
-                setTunnelNetworkSettings(settings)
-                
-                // start vpn!
-                completionHandler(nil);
+        // start packet tunnel
+        let settings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: "1");
+        let addresses: [String] = ["123.123.123.123"];
+        let subnetMasks: [String] = ["255.255.255.255"];
+        settings.ipv4Settings = NEIPv4Settings(addresses: addresses, subnetMasks: subnetMasks);
+        settings.ipv4Settings?.includedRoutes = [NEIPv4Route.default()]; // all routes
+//      settings.ipv4Settings?.excludedRoutes = bridges_val.0
+        settings.dnsSettings = .init(servers: ["1.1.1.1"])
+        settings.mtu = 1280
+        
+        setTunnelNetworkSettings(settings)
+        
+        // start vpn!
+        completionHandler(nil);
 
-                // packets up loop
-                Task {
-                    NSLog("STARTED UP LOOP")
-                    while true {
-                        let (pkts, _) = await self.packetFlow.readPackets();
-                        for p in pkts {
-                            upload_to_geph(p)
-                        }
+        // packets up loop
+        Task {
+            NSLog("STARTED UP LOOP")
+            while true {
+                let (pkts, _) = await self.packetFlow.readPackets();
+                for p in pkts {
+                    upload_to_geph(p)
+                }
+            }
+        }
+
+        // packets down loop
+        Thread.detachNewThread({
+            NSLog("STARTED DOWN LOOP")
+            var buffer = [UInt8](repeating: 0, count: 2000);
+            let p =  Array(repeating: NSNumber(2), count: 1)
+            while true {
+                let retlen = download_from_geph(buffer: &buffer)
+
+                if retlen > 0 {
+                    autoreleasepool {
+                        let toWrite = Data(bytesNoCopy: &buffer, count: Int(retlen), // mallocs 71 bytes
+                                       deallocator: Data.Deallocator.none);
+                        self.packetFlow.writePackets([toWrite], withProtocols: p) // mallocs 48 bytes
                     }
                 }
-
-                // packets down loop
-                Thread.detachNewThread({
-                    NSLog("STARTED DOWN LOOP")
-                    var buffer = [UInt8](repeating: 0, count: 2000);
-                    let p =  Array(repeating: NSNumber(2), count: 1)
-                    while true {
-                        let retlen = download_from_geph(buffer: &buffer)
-
-                        if retlen > 0 {
-                            autoreleasepool {
-                                let toWrite = Data(bytesNoCopy: &buffer, count: Int(retlen), // mallocs 71 bytes
-                                               deallocator: Data.Deallocator.none);
-                                self.packetFlow.writePackets([toWrite], withProtocols: p) // mallocs 48 bytes
-                            }
-                        }
-                    }
-                })
-                
-//                // test 0.0.0.0
-//                test_listening_ports()
             }
+        })
+    }
         
     
     override func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
@@ -151,21 +165,21 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 
 
 // helpers
-func get_bridges_wrapper() -> ([NEIPv4Route], Int) {
-    let buflen = 2000
-    var buffer = [UInt8](repeating: 0, count: buflen)
-    let retlen = check_bridges(&buffer, Int32(buflen))
-
-    if retlen <= 0 {
-        return ([], 0)
-    } else {
-        let data = Data(buffer.prefix(Int(retlen)))
-        let decoder = JSONDecoder()
-        let ret = try! decoder.decode([String].self, from: data)
-        let finalret = ret.map({x in NEIPv4Route.init(destinationAddress: x, subnetMask: "255.255.255.255")})
-        return (finalret, Int(retlen))
-    }
-}
+//func get_bridges_wrapper() -> ([NEIPv4Route], Int) {
+//    let buflen = 2000
+//    var buffer = [UInt8](repeating: 0, count: buflen)
+//    let retlen = check_bridges(&buffer, Int32(buflen))
+//
+//    if retlen <= 0 {
+//        return ([], 0)
+//    } else {
+//        let data = Data(buffer.prefix(Int(retlen)))
+//        let decoder = JSONDecoder()
+//        let ret = try! decoder.decode([String].self, from: data)
+//        let finalret = ret.map({x in NEIPv4Route.init(destinationAddress: x, subnetMask: "255.255.255.255")})
+//        return (finalret, Int(retlen))
+//    }
+//}
 
 //uploads a single packet to geph
 func upload_to_geph(_ p: Data) {

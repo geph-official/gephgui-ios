@@ -9,8 +9,6 @@ import UIKit
 import WebKit
 import NetworkExtension
 
-
-
 public let service : VPNConfigurationService = .shared
 
 class ViewController: UIViewController {
@@ -23,39 +21,32 @@ class ViewController: UIViewController {
 //        view.contentMode = .center
 //    }
     override func viewDidLoad() {
+        // requires iOS 15 & above
+            guard #available(iOS 15, *) else {
+                abort()
+            }
+
         super.viewDidLoad()
         
-        // inject js to set ios field in window
-        let js = """
-        window["ios"] = {};
-        """
-        let script = WKUserScript(source: js, injectionTime: .atDocumentStart, forMainFrameOnly: false);
-        self.webView.configuration.userContentController.addUserScript(script)
-//        print("injected js!")
-
-        // requires iOS 14 & above
-        guard #available(iOS 14, *) else {
+        // inject init.js
+        if let filepath = Bundle.main.path(forResource: "init", ofType: "js") {
+            do {
+                let js = try String(contentsOfFile: filepath)
+                let script = WKUserScript(source: js, injectionTime: .atDocumentStart, forMainFrameOnly: false)
+                self.webView.configuration.userContentController.addUserScript(script)
+                eprint("injected js!")
+            } catch {
+                eprint("init.js contents could not be loaded")
+                abort()
+            }
+        } else {
+            eprint("could not find init.js")
             abort()
         }
         
         // register message handlers
-        self.webView.configuration.userContentController.addScriptMessageHandler(
-            self, contentWorld: .page, name: "set_conversion_factor")
-        self.webView.configuration.userContentController.addScriptMessageHandler(
-            self, contentWorld: .page, name: "export_logs")
-        self.webView.configuration.userContentController.addScriptMessageHandler(
-            self, contentWorld: .page, name: "start_sync_status")
-        self.webView.configuration.userContentController.addScriptMessageHandler(
-            self, contentWorld: .page, name: "check_sync_status")
-        self.webView.configuration.userContentController.addScriptMessageHandler(
-            self, contentWorld: .page, name: "start_binder_proxy")
-        self.webView.configuration.userContentController.addScriptMessageHandler(
-            self, contentWorld: .page, name: "stop_binder_proxy")
-        self.webView.configuration.userContentController.addScriptMessageHandler(
-            self, contentWorld: .page, name: "start_daemon")
-        self.webView.configuration.userContentController.addScriptMessageHandler(
-            self, contentWorld: .page, name: "stop_daemon")
-        
+        self.webView.configuration.userContentController.add(
+            self, contentWorld: .page, name: "callRpc")
         // set nagivation delegate
         self.webView.navigationDelegate = self
         
@@ -65,38 +56,38 @@ class ViewController: UIViewController {
         webView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0.0).isActive = true
         webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0.0).isActive = true
         webView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0.0).isActive = true
-
-        
-        if let htmlPath = Bundle.main.url(forResource: "index", withExtension: "html", subdirectory: "build"){
+        if let htmlPath = Bundle.main.url(forResource: "index", withExtension: "html", subdirectory: "dist"){
             print(htmlPath)
             webView.loadFileURL( htmlPath, allowingReadAccessTo: htmlPath.deletingLastPathComponent());
         }
+        eprint("successfully loaded webView")
         
-       let center = NotificationCenter.default
-        center.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: nil) { Notification in
-            eprint("refreshing")
-            self.webView.reload()
-        }
+//        // add refresher for every time the app is opened
+//       let center = NotificationCenter.default
+//        center.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: nil) { Notification in
+//            eprint("refreshing")
+//            self.webView.reload()
+//        }
     }
     
-    // deinit and remove webview stuff to avoid memory leaks (unsure if this is necessary)
+    // deinit and remove webview stuff to avoid memory leaks
     deinit {
         eprint("deallocating")
-        
         let ucc = webView.configuration.userContentController
         ucc.removeAllUserScripts()
         ucc.removeAllScriptMessageHandlers()
     }
     
     private lazy var webView: WKWebView = {
-        let webView = WKWebView()
-//        let webView = WKWebView()
+//        let webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: 100, height: 100))
+        let configs = WKWebViewConfiguration()
+        configs.setValue(true, forKey: "_allowUniversalAccessFromFileURLs")
+        let webView = WKWebView(frame: view.bounds, configuration: configs)
         webView.translatesAutoresizingMaskIntoConstraints = false
-
         return webView
     }()
     
-    private func getManager() async throws -> NETunnelProviderManager {
+    func getManager() async throws -> NETunnelProviderManager {
         let managers = try await NETunnelProviderManager.loadAllFromPreferences()
         if managers.isEmpty {
             let manager = NETunnelProviderManager()
@@ -117,6 +108,20 @@ class ViewController: UIViewController {
             try await man.saveToPreferences()
             return man
         }
+    }
+    
+    func inject_success(_ callback: String, _ message: String) throws {
+        let json_message =  try String(data: JSONEncoder().encode(message), encoding: .utf8)
+        let js = "\(callback)[0](\(json_message!))"
+        eprint("js: ", js)
+        webView.evaluateJavaScript(js)
+    }
+    
+    func inject_reject(_ callback: String, _ message: String) throws {
+        let json_message =  try String(data: JSONEncoder().encode(message), encoding: .utf8)
+        let js = "\(callback)[1](\(json_message!))"
+        eprint("js: ", js)
+        webView.evaluateJavaScript(js)
     }
 }
 
@@ -139,103 +144,74 @@ extension ViewController: WKNavigationDelegate {
     }
 }
 
-// reference: https://gist.github.com/kevenbauke/d449718a5f268ee843f286db88f137cc
-
-extension ViewController: WKScriptMessageHandlerWithReply {
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage, replyHandler: @escaping (Any?, String?) -> Void) {
-        
-        if message.name == "start_sync_status", let messageBody = message.body as? String {
-            eprint(message.name)
-            eprint(messageBody)
-            
-            let res = handle_start_sync_status(messageBody)
-            
-            eprint("res: ", res)
-            replyHandler( res, nil )
-        }
-        
-        else if message.name == "check_sync_status", let messageBody = message.body as? String {
-            eprint(message.name)
-            eprint(messageBody)
-            
-            let res = handle_check_sync_status(messageBody)
-            eprint("res: ", res)
-            eprint(sync_global_obj)
-            
-            switch res
-            {
-            case SyncStatus.Pending : replyHandler( "", nil )
-            case SyncStatus.Error(let e) : replyHandler( "", e )
-            case SyncStatus.Done(let resp) : replyHandler(resp, nil)
-            }
-        }
-        
-        else if message.name == "start_binder_proxy" {
-            defer {replyHandler( "", nil )}
-            eprint(message.name)
-            handle_start_binder_proxy()
-        }
-        
-        else if message.name == "stop_binder_proxy", let messageBody = message.body as? String {
-            defer {replyHandler( "", nil )}
-            eprint(message.name)
-            eprint(messageBody)
-        }
-        
-        else if message.name == "start_daemon", let messageBody = message.body as? String {
-            eprint(message.name)
-            eprint(messageBody)
-            Task {
-                defer {replyHandler( "", nil )}
-                let manager = try await getManager()
-                let res = start_daemon(messageBody, manager)
-                if res != "" {
-                    eprint(res)
+@available(iOS 15.0, *)
+extension ViewController: WKScriptMessageHandler {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        Task {
+            eprint("yoyoyyo")
+            eprint(message.body)
+            if let messageBody = message.body as? [String] {
+                eprint("WebView CALLED \(message.name) \nWITH \(messageBody)")
+                let verb = messageBody[0]
+                let args = messageBody[1] // args is a json-encoded array
+                let callback = messageBody[2]
+                
+                do {
+                    if message.name == "callRpc" {
+                        switch verb {
+                        case "start_daemon":
+                            let res = try handle_start_daemon(args, try await getManager())
+                            try self.inject_success(callback, res)
+//                        case "stop_daemon":
+//                            let manager = try await getManager()
+//                            manager.connection.stopVPNTunnel()
+//                            let center = NotificationCenter.default
+//                            center.addObserver(forName: .NEVPNStatusDidChange, object: nil, queue: nil){
+//                                Notification in
+//                                if manager.connection.status == NEVPNStatus.disconnected {
+//                                    do {
+//                                        try self.inject_success(callback, "")
+//                                    } catch {
+//                                        eprint("OH NO! %@", error.localizedDescription)
+//                                    }
+//                                }
+//                            }
+                        case "sync":
+                            let ret = try handle_sync(args)
+                            try inject_success(callback, ret)
+                        case "daemon_rpc":
+                            var request = URLRequest(
+                                url: URL(string: "http://127.0.0.1:9809")!,
+                                cachePolicy: .reloadIgnoringLocalCacheData
+                            )
+                            request.httpMethod = "POST"
+                            request.httpBody = Data(args.utf8)
+                            let (data, response) = try await URLSession.shared.data(for: request)
+                            guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+                                throw "Error fetching response in daemon rpc!"
+                            }
+                            let res = String(decoding: data, as: UTF8.self)
+                            try inject_success(callback, res)
+                        case "binder_rpc":
+                            let ret = try handle_binder_rpc(args)
+                            try inject_success(callback, ret)
+                        case "export_logs":
+                            let logs_url = URL(string: "http://localhost:9809/logs")!
+                            await UIApplication.shared.open(logs_url)
+                            try inject_success(callback, "")
+                        case "version":
+                            try inject_success(callback, UIDevice.current.systemVersion)
+                        case _:
+                            throw "invalid rpc input!"
+                        }
+                    }
+                } catch {
+                    NSLog("ERROR!! %@", error.localizedDescription)
+                    try self.inject_reject(callback, error.localizedDescription)
                 }
+            } else {
+                NSLog("cannot parse rpc argument!!")
             }
-        }
-        
-        else if message.name == "stop_daemon", let messageBody = message.body as? String {
-            eprint(message.name)
-            eprint(messageBody)
-            Task {
-                defer {replyHandler( "", nil )}
-                let manager = try await getManager()
-                stop_daemon(manager)
-            }
-        }
-        
-        else if message.name == "export_logs", let messageBody = message.body as? String {
-            defer {replyHandler( "", nil )}
-            eprint(message.name)
-            eprint(messageBody)
-            let logs_url = URL(string: "http://localhost:9809/logs")!
-            UIApplication.shared.open(logs_url)
-        }
-        
-        else if message.name == "set_conversion_factor", let messageBody = message.body as? String {
-            defer {replyHandler( "", nil )}
-            eprint("setting conversion factor (not really)")
-            eprint("input = ", messageBody);
         }
     }
 }
-
-func handle_start_binder_proxy() {
-    do {
-        let args_arr = ["geph4-client", "binder-proxy", "--listen", "127.0.0.1:23456"]
-    let args = try jsonify(args_arr)
-    Thread.detachNewThread({
-        let _ = call_geph_wrapper(args)
-    })
-    } catch {
-        eprint(error.localizedDescription)
-    }
-}
-
-
-// References:
-// https://stackoverflow.com/questions/65270083/how-does-the-ios-14-api-wkscriptmessagehandlerwithreply-work-for-communicating-w
-// https://diamantidis.github.io/2020/02/02/two-way-communication-between-ios-wkwebview-and-web-page
-// https://kean.blog/post/vpn-configuration-manager
-// https://developer.apple.com/forums/thread/99399
