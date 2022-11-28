@@ -7,7 +7,8 @@ async function callRpc(verb, args) {
     window.webkit.messageHandlers.callRpc.postMessage([verb, JSON.stringify(args), some_random_name]);
   });
   console.log("about to send out");
-  let res = JSON.parse(await prom);
+  let res = await prom;
+  console.log("Swift gave us", res);
   return res;
 }
 
@@ -25,8 +26,8 @@ window["NATIVE_GATE"] = {
       }
     },
     async stop_daemon() {
-      await this.daemon_rpc("kill", []);
-      // await callRpc("stop_daemon", []);
+//      await this.daemon_rpc("kill", []);
+       await callRpc("stop_daemon", []);
     },
     async is_connected() {
       return await this.daemon_rpc("is_connected", []);

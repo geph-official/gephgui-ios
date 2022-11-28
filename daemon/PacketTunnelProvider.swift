@@ -9,22 +9,6 @@ import NetworkExtension
 import QuartzCore
 
 
-func call_geph_wrapper(_ fun: String, _ args: String) throws -> String {
-    let buflen = 2000
-    var buffer = [UInt8](repeating: 0, count: buflen)
-    let retcode = call_geph(fun, args, &buffer, Int32(buflen))
-    
-    let data = Data(buffer.prefix(Int(retcode)))
-    let decoder = JSONDecoder()
-    let ret = try decoder.decode(String.self, from: data)
-    
-    if retcode < 0 {
-        throw ret
-    } else {
-        return ret
-    }
-}
-
 class PacketTunnelProvider: NEPacketTunnelProvider {
     
     override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
@@ -36,12 +20,12 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         // which is a mapping of the string "args" to an NSString,
         // which is a serialized JSON array of args we pass to geph
         
-//                Thread.detachNewThread({
-//                    while(true) {
-//                        NSLog("still alive!")
-//                        Thread.sleep(forTimeInterval: TimeInterval(5))
-//                    }
-//                })
+                Thread.detachNewThread({
+                    while(true) {
+                        NSLog("still alive!")
+                        Thread.sleep(forTimeInterval: TimeInterval(5))
+                    }
+                })
 
         if let options_unwrapped = options {
             NSLog("called from gephgui")
@@ -60,7 +44,10 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
             do {
                 NSLog("ARGS: %@", args)
                 NSLog("about to call geph, wish me luck")
-                let res = try call_geph_wrapper("connect", args.description)
+                var decoded_args = try JSONDecoder().decode([String].self, from: args.description.data(using: .utf8)!)
+                decoded_args.append("--credential-cache")
+                decoded_args.append(cache_path())
+                let res = try call_geph_wrapper("start_daemon", decoded_args)
                 NSLog("Geph returned?! %@", res)
             } catch {
                 NSLog("Geph returned with error: %@", error.localizedDescription)
@@ -120,7 +107,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
             }
         }
 
-        // packets down loop
+        // packets down loop.
         Thread.detachNewThread({
             NSLog("STARTED DOWN LOOP")
             var buffer = [UInt8](repeating: 0, count: 2000);

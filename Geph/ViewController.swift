@@ -97,8 +97,8 @@ class ViewController: UIViewController {
             proto.providerBundleIdentifier = "geph.io.daemon"
             proto.serverAddress = "geph"
             manager.protocolConfiguration = proto
-            manager.isEnabled = true
             try await manager.loadFromPreferences()
+            manager.isEnabled = true
             try await manager.saveToPreferences()
             try await manager.loadFromPreferences()
             return manager
@@ -111,16 +111,14 @@ class ViewController: UIViewController {
     }
     
     func inject_success(_ callback: String, _ message: String) throws {
-        let json_message =  try String(data: JSONEncoder().encode(message), encoding: .utf8)
-        let js = "\(callback)[0](\(json_message!))"
-        eprint("js: ", js)
+        let js = "\(callback)[0](\(message))"
+//        eprint("js: ", js)
         webView.evaluateJavaScript(js)
     }
     
     func inject_reject(_ callback: String, _ message: String) throws {
-        let json_message =  try String(data: JSONEncoder().encode(message), encoding: .utf8)
-        let js = "\(callback)[1](\(json_message!))"
-        eprint("js: ", js)
+        let js = "\(callback)[1](\(message))"
+//        eprint("js: ", js)
         webView.evaluateJavaScript(js)
     }
 }
@@ -148,12 +146,10 @@ extension ViewController: WKNavigationDelegate {
 extension ViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         Task {
-            eprint("yoyoyyo")
-            eprint(message.body)
             if let messageBody = message.body as? [String] {
-                eprint("WebView CALLED \(message.name) \nWITH \(messageBody)")
+//                eprint("WebView CALLED \(message.name) \nWITH \(messageBody)")
                 let verb = messageBody[0]
-                let args = messageBody[1] // args is a json-encoded array
+                let args = messageBody[1] // args is a json-encoded array of strings
                 let callback = messageBody[2]
                 
                 do {
@@ -162,35 +158,25 @@ extension ViewController: WKScriptMessageHandler {
                         case "start_daemon":
                             let res = try handle_start_daemon(args, try await getManager())
                             try self.inject_success(callback, res)
-//                        case "stop_daemon":
-//                            let manager = try await getManager()
-//                            manager.connection.stopVPNTunnel()
-//                            let center = NotificationCenter.default
-//                            center.addObserver(forName: .NEVPNStatusDidChange, object: nil, queue: nil){
-//                                Notification in
-//                                if manager.connection.status == NEVPNStatus.disconnected {
-//                                    do {
-//                                        try self.inject_success(callback, "")
-//                                    } catch {
-//                                        eprint("OH NO! %@", error.localizedDescription)
-//                                    }
-//                                }
-//                            }
+                        case "stop_daemon":
+                            let manager = try await getManager()
+                            manager.connection.stopVPNTunnel()
+                            let center = NotificationCenter.default
+                            center.addObserver(forName: .NEVPNStatusDidChange, object: nil, queue: nil){
+                                Notification in
+                                if manager.connection.status == NEVPNStatus.disconnected {
+                                    do {
+                                        try self.inject_success(callback, "")
+                                    } catch {
+                                        eprint("OH NO! %@", error.localizedDescription)
+                                    }
+                                }
+                            }
                         case "sync":
                             let ret = try handle_sync(args)
                             try inject_success(callback, ret)
                         case "daemon_rpc":
-                            var request = URLRequest(
-                                url: URL(string: "http://127.0.0.1:9809")!,
-                                cachePolicy: .reloadIgnoringLocalCacheData
-                            )
-                            request.httpMethod = "POST"
-                            request.httpBody = Data(args.utf8)
-                            let (data, response) = try await URLSession.shared.data(for: request)
-                            guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-                                throw "Error fetching response in daemon rpc!"
-                            }
-                            let res = String(decoding: data, as: UTF8.self)
+                            let res = try await handle_daemon_rpc(args)
                             try inject_success(callback, res)
                         case "binder_rpc":
                             let ret = try handle_binder_rpc(args)
@@ -207,7 +193,7 @@ extension ViewController: WKScriptMessageHandler {
                     }
                 } catch {
                     NSLog("ERROR!! %@", error.localizedDescription)
-                    try self.inject_reject(callback, error.localizedDescription)
+                    try self.inject_reject(callback, jsonify(error.localizedDescription))
                 }
             } else {
                 NSLog("cannot parse rpc argument!!")
