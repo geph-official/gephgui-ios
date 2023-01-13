@@ -13,6 +13,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
     
     override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
         NSLog("TUNNEL STARTED!")
+        NSLog("DEBUGPACK_PATH = %@", DEBUGPACK_PATH)
         let defaults = UserDefaults.standard
         var args = ""
         // start geph
@@ -40,24 +41,22 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         }
         
         NSLog("just before starting the geph thread")
-        Thread.detachNewThread({
             do {
                 NSLog("ARGS: %@", args)
                 NSLog("about to call geph, wish me luck")
                 var decoded_args = try JSONDecoder().decode([String].self, from: args.description.data(using: .utf8)!)
                 decoded_args.append("--credential-cache")
-                decoded_args.append(cache_path())
+                decoded_args.append(CREDENTIAL_CACHE_PATH)
                 let res = try call_geph_wrapper("start_daemon", decoded_args)
-                NSLog("Geph returned?! %@", res)
+                NSLog("Geph returned properly %@", res)
             } catch {
                 NSLog("Geph returned with error: %@", error.localizedDescription)
             }
-        })
         
         // logs loop
         Thread.detachNewThread({
             NSLog("STARTED LOGS LOOP")
-            
+
             var buffer = [UInt8](repeating: 0, count: 2000)
             while true {
                 let len = logs_from_geph(buffer: &buffer)
@@ -106,7 +105,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                 }
             }
         }
-
+        
         // packets down loop.
         Thread.detachNewThread({
             NSLog("STARTED DOWN LOOP")
@@ -114,7 +113,6 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
             let p =  Array(repeating: NSNumber(2), count: 1)
             while true {
                 let retlen = download_from_geph(buffer: &buffer)
-
                 if retlen > 0 {
                     autoreleasepool {
                         let toWrite = Data(bytesNoCopy: &buffer, count: Int(retlen), // mallocs 71 bytes

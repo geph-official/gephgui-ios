@@ -8,19 +8,34 @@
 import Foundation
 import NetworkExtension
 
+let CREDENTIAL_CACHE_PATH = path_to("geph-credentials");
+let DEBUGPACK_PATH = path_to("geph-debugpack.db");
+let EXPORTED_DEBUGPACK_PATH = path_to("geph-debugpack-exported.db");
+
+func path_to(_ filename: String) -> String {
+    let fmanager = FileManager.default
+    let shared_dir_url = fmanager.containerURL(forSecurityApplicationGroupIdentifier: "group.geph.io")
+    return shared_dir_url!.path + "/" + filename
+}
+
 // this is so that we can `throw String`
 extension String: LocalizedError {
     public var errorDescription: String? { return self }
 }
 
 func call_geph_wrapper(_ fun: String, _ args: [String]) throws -> String {
+    var args = args
+    args.append("--debugpack-path")
+    args.append(DEBUGPACK_PATH)
+    eprint("DEBUGPACK_PATH = ", DEBUGPACK_PATH)
+    
+    eprint("CALLING GEPH WITH ARGS", args)
+    
     let args_data = String(decoding: try JSONEncoder().encode(args), as: UTF8.self)
     let buflen = 1024 * 128
     var buffer = [UInt8](repeating: 0, count: buflen)
     let retcode = call_geph(fun, args_data, &buffer, Int32(buflen))
     
-
-
     if retcode < 0 {
         eprint("Geph returned error!")
         let data = Data(buffer.prefix(Int(-retcode)))
@@ -86,6 +101,9 @@ func parse_connect_msg(_ message: String) throws -> String {
 //        args_arr.append("--use-tcp")
 //    }
     
+    args_arr.append("--vpn-mode")
+    args_arr.append("tun-no-route")
+    
     let use_bridges = connect_info["force_bridges"]! as! Bool
     if use_bridges {
         args_arr.append("--use-bridges")
@@ -93,19 +111,12 @@ func parse_connect_msg(_ message: String) throws -> String {
     return try jsonify(args_arr)
 }
 
-func cache_path() -> String {
-    let fmanager = FileManager.default
-    let urls = fmanager.urls(for: .cachesDirectory, in: .userDomainMask)
-    let fileurl = urls[0].appendingPathComponent("geph")
-    return fileurl.path
-}
-
 func handle_sync(_ message: String) throws -> String {
     let args = try JSONSerialization.jsonObject(with: message.data(using: .utf8)!, options: []) as! [Any]
     let username = args[0] as! String
     let password = args[1] as! String
     let force_flag = args[2] as! Bool
-    var args_arr = ["--username", username, "--password", password, "--credential-cache", cache_path()]
+    var args_arr = ["--username", username, "--password", password, "--credential-cache", CREDENTIAL_CACHE_PATH]
     if force_flag {
         args_arr.append("--force")
     }
@@ -120,7 +131,6 @@ func handle_binder_rpc(_ message: String) throws -> String {
     return try call_geph_wrapper("binder_rpc", args)
 }
 
-@available(iOS 15.0, *)
 func handle_daemon_rpc(_ message: String) async throws -> String {
     let args = try JSONSerialization.jsonObject(with: message.data(using: .utf8)!, options: []) as! [String]
     let line = args[0]
@@ -130,9 +140,18 @@ func handle_daemon_rpc(_ message: String) async throws -> String {
     )
     request.httpMethod = "POST"
     request.httpBody = Data(line.utf8)
-    let (data, response) = try await URLSession.shared.data(for: request)
+    let (data, response, error) : (Data?, URLResponse?, Error?) = await withCheckedContinuation { continuation in
+        URLSession.shared.dataTask(with: request, completionHandler: { data, resp, err in
+            continuation.resume(returning: (data, resp, err))
+        }).resume()
+        }
+    if (error != nil) {
+        throw error!
+    }
+//    eprint("got response", data, response);
     guard (response as? HTTPURLResponse)?.statusCode == 200 else {
         throw "Error fetching response in daemon rpc!"
     }
-    return String(decoding: data, as: UTF8.self)
+    return String(decoding: data!, as: UTF8.self)
 }
+

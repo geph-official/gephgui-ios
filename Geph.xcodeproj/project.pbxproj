@@ -22,12 +22,11 @@
 		9B7886F327EA517C00D9555F /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886F227EA517C00D9555F /* PacketTunnelProvider.swift */; };
 		9B7886F827EA517C00D9555F /* daemon.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9B7886EF27EA517C00D9555F /* daemon.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9B7978A629343E9C009B8A3C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B77DA9927F0DEE7001D323F /* Utils.swift */; };
-		9B9380432934B1DD00F919DA /* init.js in Resources */ = {isa = PBXBuildFile; fileRef = 9B9380422934B1DD00F919DA /* init.js */; };
-		9B9380452934B1E400F919DA /* dist in Resources */ = {isa = PBXBuildFile; fileRef = 9B9380442934B1E400F919DA /* dist */; };
+		9BC7997F2937110900438A8B /* init.js in Resources */ = {isa = PBXBuildFile; fileRef = 9BC7997E2937110900438A8B /* init.js */; };
+		9BC799852937134400438A8B /* dist in Resources */ = {isa = PBXBuildFile; fileRef = 9BC799842937134400438A8B /* dist */; };
 		9BCDC88627EBADCE0011290C /* test.html in Resources */ = {isa = PBXBuildFile; fileRef = 9BCDC88527EBADCE0011290C /* test.html */; };
 		9BE47CD027EE68630066390F /* libgeph4client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE47CCE27EE1F6F0066390F /* libgeph4client.a */; };
 		9BE47CD127EE687D0066390F /* libgeph4client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE47CCE27EE1F6F0066390F /* libgeph4client.a */; };
-		9BE47CDE27EFD49A0066390F /* ConfigurationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE47CDD27EFD49A0066390F /* ConfigurationService.swift */; };
 		9BFBBF172826FC8B00677CD3 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BFBBF162826FC8500677CD3 /* libresolv.tbd */; };
 /* End PBXBuildFile section */
 
@@ -91,11 +90,10 @@
 		9B7886F227EA517C00D9555F /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
 		9B7886F427EA517C00D9555F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9B7886F527EA517C00D9555F /* daemon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = daemon.entitlements; sourceTree = "<group>"; };
-		9B9380422934B1DD00F919DA /* init.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = init.js; path = Geph/init.js; sourceTree = SOURCE_ROOT; };
-		9B9380442934B1E400F919DA /* dist */ = {isa = PBXFileReference; lastKnownFileType = folder; path = dist; sourceTree = "<group>"; };
+		9BC7997E2937110900438A8B /* init.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = init.js; sourceTree = "<group>"; };
+		9BC799842937134400438A8B /* dist */ = {isa = PBXFileReference; lastKnownFileType = folder; path = dist; sourceTree = "<group>"; };
 		9BCDC88527EBADCE0011290C /* test.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = test.html; sourceTree = "<group>"; };
 		9BE47CCE27EE1F6F0066390F /* libgeph4client.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgeph4client.a; path = libGeph4Client/libgeph4client.a; sourceTree = "<group>"; };
-		9BE47CDD27EFD49A0066390F /* ConfigurationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationService.swift; sourceTree = "<group>"; };
 		9BFBBF162826FC8500677CD3 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -162,9 +160,9 @@
 		9B7886B427E8DDB100D9555F /* geph */ = {
 			isa = PBXGroup;
 			children = (
-				9B9380442934B1E400F919DA /* dist */,
+				9BC799842937134400438A8B /* dist */,
 				9B7886E727EA506F00D9555F /* geph.entitlements */,
-				9B9380422934B1DD00F919DA /* init.js */,
+				9BC7997E2937110900438A8B /* init.js */,
 				9B7886B527E8DDB100D9555F /* AppDelegate.swift */,
 				9B7886B727E8DDB100D9555F /* SceneDelegate.swift */,
 				9B7886B927E8DDB100D9555F /* ViewController.swift */,
@@ -174,7 +172,6 @@
 				9B7886BE27E8DDB200D9555F /* Assets.xcassets */,
 				9B7886C027E8DDB200D9555F /* LaunchScreen.storyboard */,
 				9B7886C327E8DDB200D9555F /* Info.plist */,
-				9BE47CDD27EFD49A0066390F /* ConfigurationService.swift */,
 			);
 			path = geph;
 			sourceTree = "<group>";
@@ -343,9 +340,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9B9380452934B1E400F919DA /* dist in Resources */,
+				9BC799852937134400438A8B /* dist in Resources */,
+				9BC7997F2937110900438A8B /* init.js in Resources */,
 				9B7886C227E8DDB200D9555F /* LaunchScreen.storyboard in Resources */,
-				9B9380432934B1DD00F919DA /* init.js in Resources */,
 				9B7886BF27E8DDB200D9555F /* Assets.xcassets in Resources */,
 				9B7886BD27E8DDB100D9555F /* Main.storyboard in Resources */,
 				9BCDC88627EBADCE0011290C /* test.html in Resources */,
@@ -383,7 +380,6 @@
 				9B7886BA27E8DDB100D9555F /* ViewController.swift in Sources */,
 				9B7886B627E8DDB100D9555F /* AppDelegate.swift in Sources */,
 				9B7886B827E8DDB100D9555F /* SceneDelegate.swift in Sources */,
-				9BE47CDE27EFD49A0066390F /* ConfigurationService.swift in Sources */,
 				9B77DA9A27F0DEE7001D323F /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -506,7 +502,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -561,7 +557,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -580,7 +576,10 @@
 				CODE_SIGN_ENTITLEMENTS = geph/geph.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
+				ENABLE_BITCODE = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client";
 				INFOPLIST_FILE = geph/Info.plist;
@@ -593,14 +592,17 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				KEEP_PRIVATE_EXTERNS = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
-				MARKETING_VERSION = 0.3;
+				MARKETING_VERSION = 0.5;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/libGeph4Client/BridgingHeader.h";
 				SWIFT_VERSION = 5.0;
@@ -618,6 +620,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
+				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client";
 				INFOPLIST_FILE = geph/Info.plist;
@@ -630,14 +633,18 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				KEEP_PRIVATE_EXTERNS = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
-				MARKETING_VERSION = 0.3;
+				MARKETING_VERSION = 0.5;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/libGeph4Client/BridgingHeader.h";
 				SWIFT_VERSION = 5.0;
@@ -732,6 +739,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
 				INFOPLIST_FILE = daemon/Info.plist;
@@ -746,7 +754,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/libGeph4Client/",
 				);
-				MARKETING_VERSION = 0.3;
+				MARKETING_VERSION = 0.5;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io.daemon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -778,7 +787,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/libGeph4Client/",
 				);
-				MARKETING_VERSION = 0.3;
+				MARKETING_VERSION = 0.5;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io.daemon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

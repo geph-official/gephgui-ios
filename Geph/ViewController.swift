@@ -9,23 +9,8 @@ import UIKit
 import WebKit
 import NetworkExtension
 
-public let service : VPNConfigurationService = .shared
-
 class ViewController: UIViewController {
-//    override func loadView() {
-////        view = webView
-//        let rect = CGRect.init(x: 0.0, y: 0.0, width: 200.0, height: 200.0)
-//        view = UIView.init(frame: rect)
-//        view.backgroundColor = .systemGreen
-//        view.contentMode = .scaleAspectFit
-//        view.contentMode = .center
-//    }
     override func viewDidLoad() {
-        // requires iOS 15 & above
-            guard #available(iOS 15, *) else {
-                abort()
-            }
-
         super.viewDidLoad()
         
         // inject init.js
@@ -34,6 +19,14 @@ class ViewController: UIViewController {
                 let js = try String(contentsOfFile: filepath)
                 let script = WKUserScript(source: js, injectionTime: .atDocumentStart, forMainFrameOnly: false)
                 self.webView.configuration.userContentController.addUserScript(script)
+                
+                let source: String = "var meta = document.createElement('meta');" +
+                    "meta.name = 'viewport';" +
+                    "meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';" +
+                    "var head = document.getElementsByTagName('head')[0];" +
+                    "head.appendChild(meta);"
+                let script2: WKUserScript = WKUserScript(source: source, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
+                self.webView.configuration.userContentController.addUserScript(script2)
                 eprint("injected js!")
             } catch {
                 eprint("init.js contents could not be loaded")
@@ -61,15 +54,7 @@ class ViewController: UIViewController {
             webView.loadFileURL( htmlPath, allowingReadAccessTo: htmlPath.deletingLastPathComponent());
         }
         eprint("successfully loaded webView")
-        
-//        // add refresher for every time the app is opened
-//       let center = NotificationCenter.default
-//        center.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: nil) { Notification in
-//            eprint("refreshing")
-//            self.webView.reload()
-//        }
     }
-    
     // deinit and remove webview stuff to avoid memory leaks
     deinit {
         eprint("deallocating")
@@ -84,6 +69,7 @@ class ViewController: UIViewController {
         configs.setValue(true, forKey: "_allowUniversalAccessFromFileURLs")
         let webView = WKWebView(frame: view.bounds, configuration: configs)
         webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.scrollView.isScrollEnabled = false
         return webView
     }()
     
@@ -110,16 +96,25 @@ class ViewController: UIViewController {
         }
     }
     
-    func inject_success(_ callback: String, _ message: String) throws {
-        let js = "\(callback)[0](\(message))"
+    func inject_success(_ callback: String, _ message: String) async throws {
+        let js = "\(callback)[0](\(message)); delete \(callback)"
 //        eprint("js: ", js)
-        webView.evaluateJavaScript(js)
+        try await webView.evaluateJavaScript(js)
     }
     
-    func inject_reject(_ callback: String, _ message: String) throws {
-        let js = "\(callback)[1](\(message))"
+     func inject_reject(_ callback: String, _ message: String) async throws {
+        let js = "\(callback)[1](\(message)); delete \(callback)"
 //        eprint("js: ", js)
-        webView.evaluateJavaScript(js)
+        try await webView.evaluateJavaScript(js)
+    }
+    
+    func handle_export_debugpack() throws {
+        let _ = try call_geph_wrapper("debugpack", ["--export-to", EXPORTED_DEBUGPACK_PATH])
+        let document_picker = UIDocumentPickerViewController(forExporting: [URL(fileURLWithPath: EXPORTED_DEBUGPACK_PATH)], asCopy: false)
+        document_picker.modalPresentationStyle = .overFullScreen
+//        let fmanager = FileManager.default
+//        document_picker.directoryURL = fmanager.urls(for: .downloadsDirectory, in: .userDomainMask)[0]
+        self.present(document_picker, animated: true)
     }
 }
 
@@ -142,12 +137,11 @@ extension ViewController: WKNavigationDelegate {
     }
 }
 
-@available(iOS 15.0, *)
 extension ViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         Task {
             if let messageBody = message.body as? [String] {
-//                eprint("WebView CALLED \(message.name) \nWITH \(messageBody)")
+                eprint("WebView CALLED \(message.name) \nWITH \(messageBody)")
                 let verb = messageBody[0]
                 let args = messageBody[1] // args is a json-encoded array of strings
                 let callback = messageBody[2]
@@ -157,7 +151,7 @@ extension ViewController: WKScriptMessageHandler {
                         switch verb {
                         case "start_daemon":
                             let res = try handle_start_daemon(args, try await getManager())
-                            try self.inject_success(callback, res)
+                            try await self.inject_success(callback, res)
                         case "stop_daemon":
                             let manager = try await getManager()
                             manager.connection.stopVPNTunnel()
@@ -165,39 +159,50 @@ extension ViewController: WKScriptMessageHandler {
                             center.addObserver(forName: .NEVPNStatusDidChange, object: nil, queue: nil){
                                 Notification in
                                 if manager.connection.status == NEVPNStatus.disconnected {
+                                    Task {
                                     do {
-                                        try self.inject_success(callback, "")
+                                        try await self.inject_success(callback, "")
                                     } catch {
                                         eprint("OH NO! %@", error.localizedDescription)
+                                    }
                                     }
                                 }
                             }
                         case "sync":
                             let ret = try handle_sync(args)
-                            try inject_success(callback, ret)
+                            try await inject_success(callback, ret)
                         case "daemon_rpc":
                             let res = try await handle_daemon_rpc(args)
-                            try inject_success(callback, res)
+                            try await inject_success(callback, res)
                         case "binder_rpc":
                             let ret = try handle_binder_rpc(args)
-                            try inject_success(callback, ret)
+                            try await inject_success(callback, ret)
                         case "export_logs":
-                            let logs_url = URL(string: "http://localhost:9809/logs")!
-                            await UIApplication.shared.open(logs_url)
-                            try inject_success(callback, "")
+                            try self.handle_export_debugpack()
+                            try await inject_success(callback, "")
                         case "version":
-                            try inject_success(callback, UIDevice.current.systemVersion)
+                            let version = try call_geph_wrapper("version", [])
+                            try await inject_success(callback, jsonify(version))
                         case _:
                             throw "invalid rpc input!"
                         }
                     }
                 } catch {
                     NSLog("ERROR!! %@", error.localizedDescription)
-                    try self.inject_reject(callback, jsonify(error.localizedDescription))
+                    try await self.inject_reject(callback, jsonify(error.localizedDescription))
                 }
             } else {
                 NSLog("cannot parse rpc argument!!")
             }
         }
+    }
+}
+
+extension ViewController: UIDocumentPickerDelegate {
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        
+    }
+    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        controller.dismiss(animated: true)
     }
 }
