@@ -102,6 +102,7 @@ window["NATIVE_GATE"] = {
         await callRpc("export_logs", []);
     },
 
+    supports_listen_all: false,
     supports_prc_whitelist: false,
     supports_proxy_conf: false,
     supports_vpn_conf: false,
