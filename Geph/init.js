@@ -17,7 +17,10 @@ async function callRpc(verb, args) {
         let res = await prom;
         console.log("Swift gave us", res);
         return res;
-    } finally {
+    } catch(e) {
+        console.log("CallRpc ERROR!", e)
+    }
+    finally {
         callingRpc = false
     }
 }

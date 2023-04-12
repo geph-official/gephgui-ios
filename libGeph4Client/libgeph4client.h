@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-int call_geph(const char *func, const char *opt, unsigned char *buffer, int buflen);
+int call_geph(const char *func, const char *daemon_rpc_secret, const char *opt, unsigned char *buffer, int buflen);
 
 void upload_packet(unsigned char *pkt, int len);
 

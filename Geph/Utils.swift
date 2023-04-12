@@ -11,6 +11,7 @@ import NetworkExtension
 let CREDENTIAL_CACHE_PATH = path_to("geph-credentials");
 let DEBUGPACK_PATH = path_to("geph-debugpack.db");
 let EXPORTED_DEBUGPACK_PATH = path_to("geph-debugpack-exported.db");
+let DAEMON_RPC_SECRET_PATH_KEY = "daemonRpcSecretPath";
 
 func path_to(_ filename: String) -> String {
     let fmanager = FileManager.default
@@ -29,12 +30,15 @@ func call_geph_wrapper(_ fun: String, _ args: [String]) throws -> String {
     args.append(DEBUGPACK_PATH)
     eprint("DEBUGPACK_PATH = ", DEBUGPACK_PATH)
     
-    eprint("CALLING GEPH WITH ARGS", args)
+    let daemon_rpc_secret = get_daemon_rpc_secret()
     
+    eprint("CALLING GEPH WITH ARGS", args)
+
     let args_data = String(decoding: try JSONEncoder().encode(args), as: UTF8.self)
     let buflen = 1024 * 128
     var buffer = [UInt8](repeating: 0, count: buflen)
-    let retcode = call_geph(fun, args_data, &buffer, Int32(buflen))
+    
+    let retcode = call_geph(fun, daemon_rpc_secret, args_data, &buffer, Int32(buflen))
     
     if retcode < 0 {
         eprint("Geph returned error!")
@@ -63,6 +67,21 @@ var errStream = StderrOutputStream()
 func eprint(_ items: Any..., separator: String = " ", terminator: String = "\n") {
     let str = items.map{String(describing: $0)}.joined(separator: " ")
     print(_: str, separator: separator, terminator: terminator, to: &errStream)
+}
+
+import Foundation
+
+func generateRandomString(length: Int, characters: String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") -> String {
+    let charactersArray = Array(characters)
+    return String((0..<length).map { _ in charactersArray.randomElement()! })
+}
+
+func get_daemon_rpc_secret() -> String {
+    let sharedDefaults = UserDefaults(suiteName: "group.geph.io")
+    guard let secret_path = sharedDefaults?.string(forKey: DAEMON_RPC_SECRET_PATH_KEY) else {
+        fatalError("daemon-rpc secret path not set!")
+    }
+    return secret_path
 }
 
 func handle_start_daemon(_ message: String, _ manager: NETunnelProviderManager) throws -> String {
@@ -134,8 +153,12 @@ func handle_binder_rpc(_ message: String) throws -> String {
 func handle_daemon_rpc(_ message: String) async throws -> String {
     let args = try JSONSerialization.jsonObject(with: message.data(using: .utf8)!, options: []) as! [String]
     let line = args[0]
+    
+    let secret_path = get_daemon_rpc_secret()
+    let url_str = "http://127.0.0.1:9809/" + secret_path
+    eprint("DAEMON_RPC_URL = ", url_str)
     var request = URLRequest(
-        url: URL(string: "http://127.0.0.1:9809")!,
+        url: URL(string: url_str)!,
         cachePolicy: .reloadIgnoringLocalCacheData
     )
     request.httpMethod = "POST"

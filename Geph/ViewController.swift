@@ -12,6 +12,12 @@ import NetworkExtension
 class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
+        // generate & set daemon-rpc secret path if it's not already set
+        let sharedDefaults = UserDefaults(suiteName: "group.geph.io")
+        if sharedDefaults?.string(forKey: DAEMON_RPC_SECRET_PATH_KEY) == nil {
+            let randomString = generateRandomString(length: 20)
+            sharedDefaults?.set(randomString, forKey: DAEMON_RPC_SECRET_PATH_KEY)
+        }
         
         // inject init.js
         if let filepath = Bundle.main.path(forResource: "init", ofType: "js") {
@@ -141,11 +147,11 @@ extension ViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         Task {
             if let messageBody = message.body as? [String] {
-                eprint("WebView CALLED \(message.name) \nWITH \(messageBody)")
+//                eprint("WebView CALLED \(message.name) WITH \(messageBody)")
                 let verb = messageBody[0]
                 let args = messageBody[1] // args is a json-encoded array of strings
                 let callback = messageBody[2]
-                
+//                eprint("callback = ", callback)
                 do {
                     if message.name == "callRpc" {
                         switch verb {
@@ -153,21 +159,27 @@ extension ViewController: WKScriptMessageHandler {
                             let res = try handle_start_daemon(args, try await getManager())
                             try await self.inject_success(callback, res)
                         case "stop_daemon":
+                            
                             let manager = try await getManager()
                             manager.connection.stopVPNTunnel()
-                            let center = NotificationCenter.default
-                            center.addObserver(forName: .NEVPNStatusDidChange, object: nil, queue: nil){
-                                Notification in
-                                if manager.connection.status == NEVPNStatus.disconnected {
-                                    Task {
-                                    do {
-                                        try await self.inject_success(callback, "")
-                                    } catch {
-                                        eprint("OH NO! %@", error.localizedDescription)
-                                    }
+                            
+                            Task {
+                                while true {
+                                    if manager.connection.status == NEVPNStatus.disconnected {
+                                        do {
+                                            eprint("callback = ", callback)
+                                            try await self.inject_success(callback, "")
+                                        } catch {
+                                            eprint("OH NO! ", error.localizedDescription)
+                                        }
+                                        break;
+                                    } else {
+                                        try await Task.sleep(nanoseconds: 100000000)
                                     }
                                 }
                             }
+
+
                         case "sync":
                             let ret = try handle_sync(args)
                             try await inject_success(callback, ret)
