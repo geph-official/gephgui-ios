@@ -1,5 +1,6 @@
 #! /bin/bash
 
+
 echo "Compiling geph4-client binary + moving it to gephgui-ios 
 libGeph4Client!";
 

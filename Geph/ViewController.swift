@@ -115,7 +115,7 @@ class ViewController: UIViewController {
     }
     
     func handle_export_debugpack() throws {
-        let _ = try call_geph_wrapper("debugpack", ["--export-to", EXPORTED_DEBUGPACK_PATH])
+        let _ = try handle_debugpack()
         let document_picker = UIDocumentPickerViewController(forExporting: [URL(fileURLWithPath: EXPORTED_DEBUGPACK_PATH)], asCopy: false)
         document_picker.modalPresentationStyle = .overFullScreen
 //        let fmanager = FileManager.default
@@ -156,7 +156,7 @@ extension ViewController: WKScriptMessageHandler {
                     if message.name == "callRpc" {
                         switch verb {
                         case "start_daemon":
-                            let res = try handle_start_daemon(args, try await getManager())
+                            let res = try start_tunnel(args, try await getManager())
                             try await self.inject_success(callback, res)
                         case "stop_daemon":
                             
@@ -179,21 +179,26 @@ extension ViewController: WKScriptMessageHandler {
                                 }
                             }
 
-
                         case "sync":
-                            let ret = try handle_sync(args)
+                            let ret = try await callBlockingSyncFunc{
+                                try handle_sync(args)
+                            }
                             try await inject_success(callback, ret)
                         case "daemon_rpc":
                             let res = try await handle_daemon_rpc(args)
                             try await inject_success(callback, res)
                         case "binder_rpc":
-                            let ret = try handle_binder_rpc(args)
+                            let ret = try await callBlockingSyncFunc{
+                                try handle_binder_rpc(args)
+                            }
+                            eprint("binder_rpc before calling inject_success!!!!!")
                             try await inject_success(callback, ret)
+                            eprint("binder_rpc successfully called inject_success~~~~~")
                         case "export_logs":
                             try self.handle_export_debugpack()
                             try await inject_success(callback, "")
                         case "version":
-                            let version = try call_geph_wrapper("version", [])
+                            let version = try handle_version()
                             try await inject_success(callback, jsonify(version))
                         case _:
                             throw "invalid rpc input!"
@@ -216,5 +221,20 @@ extension ViewController: UIDocumentPickerDelegate {
     }
     func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
         controller.dismiss(animated: true)
+    }
+}
+
+func callBlockingSyncFunc(_ function: @escaping () throws -> String) async -> String {
+    return await withCheckedContinuation { continuation in
+        DispatchQueue.global(qos: .background).async {
+            do {
+                let result = try function()
+                continuation.resume(returning: result)
+            } catch {
+                // Handle the error. For example, return a default value or error message.
+                // Adjust this according to your needs.
+                continuation.resume(returning: "Error: \(error)")
+            }
+        }
     }
 }

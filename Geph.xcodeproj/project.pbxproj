@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9B38C8802B44AD3D001690A7 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B7886E927EA506F00D9555F /* NetworkExtension.framework */; };
 		9B77DA9A27F0DEE7001D323F /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B77DA9927F0DEE7001D323F /* Utils.swift */; };
 		9B7886B627E8DDB100D9555F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886B527E8DDB100D9555F /* AppDelegate.swift */; };
 		9B7886B827E8DDB100D9555F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886B727E8DDB100D9555F /* SceneDelegate.swift */; };
@@ -17,10 +18,9 @@
 		9B7886CD27E8DDB300D9555F /* gephTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886CC27E8DDB300D9555F /* gephTests.swift */; };
 		9B7886D727E8DDB300D9555F /* gephUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886D627E8DDB300D9555F /* gephUITests.swift */; };
 		9B7886D927E8DDB300D9555F /* gephUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886D827E8DDB300D9555F /* gephUITestsLaunchTests.swift */; };
-		9B7886EA27EA506F00D9555F /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B7886E927EA506F00D9555F /* NetworkExtension.framework */; };
 		9B7886F027EA517C00D9555F /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B7886E927EA506F00D9555F /* NetworkExtension.framework */; };
 		9B7886F327EA517C00D9555F /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886F227EA517C00D9555F /* PacketTunnelProvider.swift */; };
-		9B7886F827EA517C00D9555F /* daemon.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9B7886EF27EA517C00D9555F /* daemon.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9B7886F827EA517C00D9555F /* daemon.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9B7886EF27EA517C00D9555F /* daemon.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9B7978A629343E9C009B8A3C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B77DA9927F0DEE7001D323F /* Utils.swift */; };
 		9BC7997F2937110900438A8B /* init.js in Resources */ = {isa = PBXBuildFile; fileRef = 9BC7997E2937110900438A8B /* init.js */; };
 		9BC799852937134400438A8B /* dist in Resources */ = {isa = PBXBuildFile; fileRef = 9BC799842937134400438A8B /* dist */; };
@@ -55,15 +55,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		9B7886FC27EA517C00D9555F /* Embed App Extensions */ = {
+		9B7886FC27EA517C00D9555F /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				9B7886F827EA517C00D9555F /* daemon.appex in Embed App Extensions */,
+				9B7886F827EA517C00D9555F /* daemon.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -102,8 +102,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9B7886EA27EA506F00D9555F /* NetworkExtension.framework in Frameworks */,
 				9BE47CD027EE68630066390F /* libgeph4client.a in Frameworks */,
+				9B38C8802B44AD3D001690A7 /* NetworkExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,7 +223,7 @@
 				9B7886AE27E8DDB100D9555F /* Sources */,
 				9B7886AF27E8DDB100D9555F /* Frameworks */,
 				9B7886B027E8DDB100D9555F /* Resources */,
-				9B7886FC27EA517C00D9555F /* Embed App Extensions */,
+				9B7886FC27EA517C00D9555F /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -296,7 +296,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1320;
-				LastUpgradeCheck = 1320;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					9B7886B127E8DDB100D9555F = {
 						CreatedOnToolsVersion = 13.2.1;
@@ -598,11 +598,10 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
-				MARKETING_VERSION = 0.5;
+				MARKETING_VERSION = 0.6;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/libGeph4Client/BridgingHeader.h";
 				SWIFT_VERSION = 5.0;
@@ -639,12 +638,11 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
-				MARKETING_VERSION = 0.5;
+				MARKETING_VERSION = 0.6;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/libGeph4Client/BridgingHeader.h";
 				SWIFT_VERSION = 5.0;

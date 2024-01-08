@@ -1,10 +1,3 @@
-//
-//  connect_binder_proxy.swift
-//  geph
-//
-//  Created by Eric Dong on 3/26/22.
-//
-
 import Foundation
 import NetworkExtension
 
@@ -12,6 +5,7 @@ let CREDENTIAL_CACHE_PATH = path_to("geph-credentials");
 let DEBUGPACK_PATH = path_to("geph-debugpack.db");
 let EXPORTED_DEBUGPACK_PATH = path_to("geph-debugpack-exported.db");
 let DAEMON_RPC_SECRET_PATH_KEY = "daemonRpcSecretPath";
+var DAEMON_KEY: Int32 = 0;
 
 func path_to(_ filename: String) -> String {
     let fmanager = FileManager.default
@@ -24,39 +18,7 @@ extension String: LocalizedError {
     public var errorDescription: String? { return self }
 }
 
-func call_geph_wrapper(_ fun: String, _ args: [String]) throws -> String {
-    var args = args
-    args.append("--debugpack-path")
-    args.append(DEBUGPACK_PATH)
-    eprint("DEBUGPACK_PATH = ", DEBUGPACK_PATH)
-    
-    let daemon_rpc_secret = get_daemon_rpc_secret()
-    
-    eprint("CALLING GEPH WITH ARGS", args)
-
-    let args_data = String(decoding: try JSONEncoder().encode(args), as: UTF8.self)
-    let buflen = 1024 * 128
-    var buffer = [UInt8](repeating: 0, count: buflen)
-    
-    let retcode = call_geph(fun, daemon_rpc_secret, args_data, &buffer, Int32(buflen))
-    
-    if retcode < 0 {
-        eprint("Geph returned error!")
-        let data = Data(buffer.prefix(Int(-retcode)))
-        let data_str = String(decoding: data, as: UTF8.self)
-        throw data_str
-    } else {
-        let data = Data(buffer.prefix(Int(retcode)))
-        let data_str = String(decoding: data, as: UTF8.self)
-        return data_str
-    }
-}
-
-func jsonify<T>(_ to_encode: T) throws -> String where T: Encodable {
-    let encoder = JSONEncoder()
-        let args_data = try encoder.encode(to_encode)
-        let encoded = String(data: args_data, encoding: .utf8)!
-        return encoded
+extension Int32: Error {
 }
 
 struct StderrOutputStream: TextOutputStream {
@@ -64,12 +26,11 @@ struct StderrOutputStream: TextOutputStream {
 }
 
 var errStream = StderrOutputStream()
+
 func eprint(_ items: Any..., separator: String = " ", terminator: String = "\n") {
     let str = items.map{String(describing: $0)}.joined(separator: " ")
     print(_: str, separator: separator, terminator: terminator, to: &errStream)
 }
-
-import Foundation
 
 func generateRandomString(length: Int, characters: String = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") -> String {
     let charactersArray = Array(characters)
@@ -84,50 +45,15 @@ func get_daemon_rpc_secret() -> String {
     return secret_path
 }
 
-func handle_start_daemon(_ message: String, _ manager: NETunnelProviderManager) throws -> String {
+func start_tunnel(_ message: String, _ manager: NETunnelProviderManager) throws -> String {
     eprint("STARTING THE DAEMON!!!")
-//    eprint("The manager looks like this: ", manager)
-    let args = try parse_connect_msg(message)
-    eprint(args)
-    let args_map = ["args" : NSString(string: args)]
-    
-    eprint("the connection looks like", manager.connection)
-    
+    //    eprint("The manager looks like this: ", manager)
+    let args_map = ["args" : NSString(string: message)]
+    //    eprint("the connection looks like", manager.connection)
     assert(manager.isEnabled)
     try manager.connection.startVPNTunnel(options: args_map)
     eprint("the vpn started lol\n", manager.connection.status)
     return "\"\""
-}
-
-// message is a json-encoded array containing one DaemonArgs object
-func parse_connect_msg(_ message: String) throws -> String {
-    let json = try JSONSerialization.jsonObject(with: message.data(using: .utf8)!, options: []) as! [[String : Any]]
-    let connect_info = json[0]
-    var args_arr = ["--username"]
-    let username = connect_info["username"]! as! String
-    args_arr.append(username)
-    
-    args_arr.append("--password")
-    let password = connect_info["password"]! as! String
-    args_arr.append(password)
-    
-    args_arr.append("--exit-server")
-    let exit_name = connect_info["exit_hostname"]! as! String
-    args_arr.append(exit_name)
-
-//    let use_tcp = connect_info["use_tcp"]! as! Bool
-//    if use_tcp {
-//        args_arr.append("--use-tcp")
-//    }
-    
-    args_arr.append("--vpn-mode")
-    args_arr.append("tun-no-route")
-    
-    let use_bridges = connect_info["force_bridges"]! as! Bool
-    if use_bridges {
-        args_arr.append("--use-bridges")
-    }
-    return try jsonify(args_arr)
 }
 
 func handle_sync(_ message: String) throws -> String {
@@ -135,20 +61,56 @@ func handle_sync(_ message: String) throws -> String {
     let username = args[0] as! String
     let password = args[1] as! String
     let force_flag = args[2] as! Bool
-    var args_arr = ["--username", username, "--password", password, "--credential-cache", CREDENTIAL_CACHE_PATH]
+    
+    var args_arr = ["sync", "--credential-cache", CREDENTIAL_CACHE_PATH, "auth-password", "--username", username, "--password", password]
     if force_flag {
         args_arr.append("--force")
     }
-    eprint(args_arr)
-    let ret = try call_geph_wrapper("sync", args_arr)
-    return ret
+    let args_str = String(decoding: try JSONEncoder().encode(args_arr), as: UTF8.self).cString(using: .utf8)!
+    let buflen = 1024 * 128
+    var buffer = [CChar](repeating: 0, count: buflen)
+    
+    let retcode = args_str.withUnsafeBufferPointer { argsPtr in
+        buffer.withUnsafeMutableBufferPointer { bufferPtr in
+            geph_sync(argsPtr.baseAddress, bufferPtr.baseAddress, Int32(buflen))
+        }
+    }
+    if retcode < 0 {
+        eprint("sync returned an error! retcode = ", retcode)
+        throw retcode
+    } else {
+        let data = Data(bytes: buffer, count: Int(retcode))
+        return String(decoding: data, as: UTF8.self)
+    }
 }
-
 
 func handle_binder_rpc(_ message: String) throws -> String {
     let args = try JSONDecoder().decode([String].self, from: message.data(using: .utf8)!)
-    return try call_geph_wrapper("binder_rpc", args)
+    guard let line = args.first?.cString(using: .utf8) else {
+        throw "invalid input"
+    }
+    let buflen = 1024 * 128
+    var buffer = [CChar](repeating: 0, count: buflen)
+
+//    let retcode = binder_rpc(line, &buffer, Int32(buflen))
+    eprint(line)
+    let retcode = line.withUnsafeBufferPointer { linePtr in
+        buffer.withUnsafeMutableBufferPointer { bufferPtr in
+            binder_rpc(linePtr.baseAddress, bufferPtr.baseAddress, Int32(buflen))
+        }
+    }
+
+    if retcode < 0 {
+        eprint("binder_rpc returned an error: \(retcode)")
+        throw retcode
+    } else if retcode > buflen {
+        throw "buffer overflow"
+    } else {
+        let data = Data(bytes: buffer, count: Int(retcode))
+        return String(decoding: data, as: UTF8.self)
+    }
 }
+
 
 func handle_daemon_rpc(_ message: String) async throws -> String {
     let args = try JSONSerialization.jsonObject(with: message.data(using: .utf8)!, options: []) as! [String]
@@ -167,14 +129,91 @@ func handle_daemon_rpc(_ message: String) async throws -> String {
         URLSession.shared.dataTask(with: request, completionHandler: { data, resp, err in
             continuation.resume(returning: (data, resp, err))
         }).resume()
-        }
+    }
     if (error != nil) {
         throw error!
     }
-//    eprint("got response", data, response);
+    //    eprint("got response", data, response);
     guard (response as? HTTPURLResponse)?.statusCode == 200 else {
         throw "Error fetching response in daemon rpc!"
     }
-    return String(decoding: data!, as: UTF8.self)
+    let resp = String(decoding: data!, as: UTF8.self)
+    eprint("DAEMON_RPC req = ", line, "resp = ", resp)
+    return resp
 }
 
+func handle_version() throws -> String {
+    let buflen = 1024 * 10
+    var buffer = [CChar](repeating: 0, count: buflen)
+    let retcode = version(&buffer, Int32(buflen));
+    if retcode < 0 {
+        throw retcode
+    } else {
+        let data = Data(bytes: buffer, count: Int(retcode))
+        return String(decoding: data, as: UTF8.self)
+    }
+}
+
+func handle_debugpack() throws {
+    if DAEMON_KEY == 0 {
+        throw "You can only export debugpacks when Geph is connected"
+    }
+    let retcode = debugpack(DAEMON_KEY, EXPORTED_DEBUGPACK_PATH);
+    if retcode < 0 {
+        throw retcode
+    }
+}
+
+func start_daemon(_ args_json_str: String) throws {
+    let start_opt = try make_start_opt(args_json_str)
+    let daemon_rpc_secret = get_daemon_rpc_secret()
+    
+    let retcode = start(start_opt, daemon_rpc_secret);
+    if retcode < 0 {
+        NSLog("Start daemon returned an error! Retcode = %@", retcode)
+        throw retcode
+    } else {
+        NSLog("Start daemon succeeded <3<3<3<3")
+        DAEMON_KEY = retcode;
+    }
+}
+
+// message is a json-encoded array containing one DaemonArgs object
+func make_start_opt(_ message: String) throws -> String {
+    let json = try JSONSerialization.jsonObject(with: message.data(using: .utf8)!, options: []) as! [[String : Any]]
+    let connect_info = json[0]
+    
+    var args_arr = ["connect"]
+    args_arr.append("--exit-server")
+    args_arr.append(connect_info["exit_hostname"]! as! String)
+    
+    //    if connect_info["use_tcp"]! as! Bool {
+    //        args_arr.append("--use-tcp")
+    //    }
+    
+    if connect_info["force_bridges"]! as! Bool {
+        args_arr.append("--use-bridges")
+    }
+    
+    args_arr.append("--debugpack-path")
+    args_arr.append(DEBUGPACK_PATH)
+    
+    args_arr.append("--credential-cache")
+    args_arr.append(CREDENTIAL_CACHE_PATH)
+    
+    args_arr.append("auth-password")
+    args_arr.append("--username")
+    args_arr.append(connect_info["username"]! as! String)
+    
+    args_arr.append("--password")
+    args_arr.append(connect_info["password"]! as! String)
+    
+    return try jsonify(args_arr)
+}
+
+func jsonify<T>(_ to_encode: T) throws -> String where T: Encodable {
+    let encoder = JSONEncoder()
+    let args_data = try encoder.encode(to_encode)
+    let encoded = String(data: args_data, encoding: .utf8)!
+    return encoded
+}
