@@ -10,7 +10,6 @@ import QuartzCore
 
 
 class PacketTunnelProvider: NEPacketTunnelProvider {
-    
     override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
         NSLog("TUNNEL STARTED!")
         NSLog("DEBUGPACK_PATH = %@", DEBUGPACK_PATH)
@@ -50,20 +49,21 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         }
         
         // logs loop
-        Thread.detachNewThread({
-            NSLog("STARTED LOGS LOOP")
-            var buffer = [UInt8](repeating: 0, count: 2000)
-            while true {
-                let retlen = get_log_line(&buffer, Int32(buffer.count))
-                if retlen < 0 {
-                    NSLog("LOGS RETRIEVAL ERROR!!!")
-                } else {
-                    let msg = String(bytesNoCopy: &buffer, length: Int(retlen), encoding: .utf8, freeWhenDone: false)!
-                    NSLog(msg)
-                }
-            }
-        })
-        
+//        Thread.detachNewThread({
+//            NSLog("STARTED LOGS LOOP")
+//            var buffer = [UInt8](repeating: 0, count: 2000)
+//            while true {
+//
+//                let retlen = buffer.withUnsafeMutableBufferPointer { bufferPointer in get_log_line(bufferPointer.baseAddress, 2000)};
+//                if retlen < 0 {
+//                    NSLog("LOGS RETRIEVAL ERROR!!!")
+//                } else {
+//                    let msg = String(bytesNoCopy: &buffer, length: Int(retlen), encoding: .utf8, freeWhenDone: false)!
+//                    NSLog(msg)
+//                }
+//            }
+//        })
+//
         //        // call get_bridges in a loop until we have the list of bridges
         //        var bridges_val = get_bridges_wrapper()
         //        while bridges_val.1 <= 2 {             // NOTE: an empty array of bridges has length 2, not 0
@@ -92,33 +92,31 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         // start vpn!
         completionHandler(nil);
         
-        // packets up loop
-        //        Task {
-        //            NSLog("STARTED UP LOOP")
-        //            while true {
-        //                let (pkts, _) = await self.packetFlow.readPackets();
-        //                for p in pkts {
-        //                    upload_to_geph(p)
-        //                }
-        //            }
-        //        }
+        Task {
+            NSLog("STARTED UP LOOP")
+            while true {
+                let (pkts, _) = await self.packetFlow.readPackets();
+                for p in pkts {
+                    upload_to_geph(p)
+                }
+            }
+        }
         
-        // packets down loop.
-        //        Thread.detachNewThread({
-        //            NSLog("STARTED DOWN LOOP")
-        //            var buffer = [UInt8](repeating: 0, count: 2000);
-        //            let p =  Array(repeating: NSNumber(2), count: 1)
-        //            while true {
-        //                let retlen = download_from_geph(buffer: &buffer)
-        //                if retlen > 0 {
-        //                    autoreleasepool {
-        //                        let toWrite = Data(bytesNoCopy: &buffer, count: Int(retlen), // mallocs 71 bytes
-        //                                       deallocator: Data.Deallocator.none);
-        //                        self.packetFlow.writePackets([toWrite], withProtocols: p) // mallocs 48 bytes
-        //                    }
-        //                }
-        //            }
-        //        })
+        Thread.detachNewThread({
+            NSLog("STARTED DOWN LOOP")
+            var buffer = [UInt8](repeating: 0, count: 2000);
+            let p =  Array(repeating: NSNumber(2), count: 1)
+            while true {
+                let retlen = download_from_geph(buffer: &buffer)
+                if retlen > 0 {
+                    autoreleasepool {
+                        let toWrite = Data(bytesNoCopy: &buffer, count: Int(retlen), // mallocs 71 bytes
+                                           deallocator: Data.Deallocator.none);
+                        self.packetFlow.writePackets([toWrite], withProtocols: p) // mallocs 48 bytes
+                    }
+                }
+            }
+        })
     }
     
     
@@ -157,7 +155,9 @@ func upload_to_geph(_ p: Data) {
 func download_from_geph(buffer: inout [UInt8]) -> Int32 {
     var retlen = Int32(0)
     let buflen = buffer.count;
-    retlen = recv_vpn(DAEMON_KEY, &buffer, Int32(buflen))
+    buffer.withUnsafeMutableBytes({bufferPointer in
+        retlen = recv_vpn(DAEMON_KEY, bufferPointer.baseAddress, Int32(buflen))
+    })
     
     return retlen
 }

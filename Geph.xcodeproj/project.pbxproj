@@ -27,6 +27,10 @@
 		9BCDC88627EBADCE0011290C /* test.html in Resources */ = {isa = PBXBuildFile; fileRef = 9BCDC88527EBADCE0011290C /* test.html */; };
 		9BE47CD027EE68630066390F /* libgeph4client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE47CCE27EE1F6F0066390F /* libgeph4client.a */; };
 		9BE47CD127EE687D0066390F /* libgeph4client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE47CCE27EE1F6F0066390F /* libgeph4client.a */; };
+		9BFB49642B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */; };
+		9BFB49652B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */; };
+		9BFB49662B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */; };
+		9BFB49672B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */; };
 		9BFBBF172826FC8B00677CD3 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BFBBF162826FC8500677CD3 /* libresolv.tbd */; };
 /* End PBXBuildFile section */
 
@@ -94,6 +98,7 @@
 		9BC799842937134400438A8B /* dist */ = {isa = PBXFileReference; lastKnownFileType = folder; path = dist; sourceTree = "<group>"; };
 		9BCDC88527EBADCE0011290C /* test.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = test.html; sourceTree = "<group>"; };
 		9BE47CCE27EE1F6F0066390F /* libgeph4client.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgeph4client.a; path = libGeph4Client/libgeph4client.a; sourceTree = "<group>"; };
+		9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = SyncedProducts.storekit; path = Geph/SyncedProducts.storekit; sourceTree = SOURCE_ROOT; };
 		9BFBBF162826FC8500677CD3 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -167,6 +172,7 @@
 				9B7886B727E8DDB100D9555F /* SceneDelegate.swift */,
 				9B7886B927E8DDB100D9555F /* ViewController.swift */,
 				9B77DA9927F0DEE7001D323F /* Utils.swift */,
+				9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */,
 				9BCDC88527EBADCE0011290C /* test.html */,
 				9B7886BB27E8DDB100D9555F /* Main.storyboard */,
 				9B7886BE27E8DDB200D9555F /* Assets.xcassets */,
@@ -296,7 +302,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1320;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1530;
 				TargetAttributes = {
 					9B7886B127E8DDB100D9555F = {
 						CreatedOnToolsVersion = 13.2.1;
@@ -340,6 +346,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BFB49642B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */,
 				9BC799852937134400438A8B /* dist in Resources */,
 				9BC7997F2937110900438A8B /* init.js in Resources */,
 				9B7886C227E8DDB200D9555F /* LaunchScreen.storyboard in Resources */,
@@ -353,6 +360,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BFB49652B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,6 +368,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BFB49662B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,6 +376,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BFB49672B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,6 +498,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -502,7 +513,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -549,6 +560,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -557,7 +569,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -574,8 +586,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = geph/geph.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
 				ENABLE_BITCODE = NO;
@@ -591,17 +604,18 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				KEEP_PRIVATE_EXTERNS = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
-				MARKETING_VERSION = 0.6;
+				MARKETING_VERSION = 0.8;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/libGeph4Client/BridgingHeader.h";
 				SWIFT_VERSION = 5.0;
@@ -616,8 +630,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = geph/geph.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -631,17 +646,18 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				KEEP_PRIVATE_EXTERNS = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
-				MARKETING_VERSION = 0.6;
+				MARKETING_VERSION = 0.8;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/libGeph4Client/BridgingHeader.h";
@@ -700,6 +716,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io.gephUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -719,6 +736,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io.gephUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";

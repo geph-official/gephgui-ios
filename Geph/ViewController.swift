@@ -10,8 +10,28 @@ import WebKit
 import NetworkExtension
 
 class ViewController: UIViewController {
+    func showSubscriptionExistsAlert() {
+            // Create the alert controller
+            let alertController = UIAlertController(title: "Subscription Exists | 已有订阅", message: "You already have an subscription associated with this Apple ID. If it is with another Geph account, and you would like to transfer the subscription over to this account, please contact support@geph.io\n\n此 Apple ID 已经订阅了迷雾通 Plus。如果您的 Plus 订阅在另一个迷雾通账户，而您希望将 Plus 订阅转移到这个账户，请邮件联系 support@geph.io", preferredStyle: .alert)
+            
+            // Create the actions
+            let confirmAction = UIAlertAction(title: "Ok", style: .default) { (_) in
+                inapp_purchase()
+            }
+            
+            // Add the actions to the alert controller
+            alertController.addAction(confirmAction)
+            
+            // Present the alert
+            self.present(alertController, animated: true, completion: nil)
+        }
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        // fetch subscription product info & user subscription status
+        fetchProduct()
+        fetchHasSubscription()
+        
         // generate & set daemon-rpc secret path if it's not already set
         let sharedDefaults = UserDefaults(suiteName: "group.geph.io")
         if sharedDefaults?.string(forKey: DAEMON_RPC_SECRET_PATH_KEY) == nil {
@@ -131,10 +151,22 @@ extension ViewController: WKNavigationDelegate {
                     return
                 }
         let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
-        
+        eprint("COMPONENTS: ", components?.host);
         if components?.scheme == "http" || components?.scheme == "https" {
-            // open the link in the external browser.
-            UIApplication.shared.open(url)
+            if components?.host != "geph.io" {
+                // open the link in the external browser.
+                UIApplication.shared.open(url)
+            } else {
+                if let hasSubscription = hasSubscription {
+                    if hasSubscription {
+                        showSubscriptionExistsAlert()
+                    } else {
+                        inapp_purchase()
+                    }
+                } else {
+                    inapp_purchase()
+                }
+            }
             // cancel the decisionHandler because we managed the navigationAction.
             decisionHandler(.cancel)
         } else {

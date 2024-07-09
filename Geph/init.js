@@ -1,6 +1,7 @@
 const getRandomName = () => "__callback" + Math.round(Math.random() * 100);
 
 let callingRpc = false
+//let is_plus = true
 
 async function callRpc(verb, args) {
     while (callingRpc) {
@@ -27,16 +28,17 @@ async function callRpc(verb, args) {
 
 window["NATIVE_GATE"] = {
     async start_daemon(params) {
-        await callRpc("start_daemon", [params]);
-        while (true) {
-            try {
-                await this.is_connected();
-                break;
-            } catch (e) {
-                await new Promise((r) => setTimeout(r, 200));
-                continue;
+//        if (is_plus) {
+            await callRpc("start_daemon", [params]);
+            while (true) {
+                try {
+                    await this.is_connected();
+                    break;
+                } catch (e) {
+                    await new Promise((r) => setTimeout(r, 200));
+                }
             }
-        }
+//        } else throw "iOS testflight only available to Plus users / iOS 测试版目前只对付费用户开放";
     },
     async stop_daemon() {
         //      await this.daemon_rpc("kill", []);
@@ -55,14 +57,20 @@ window["NATIVE_GATE"] = {
     },
     async sync_user_info(username, password) {
         let sync_info = await callRpc("sync", [username, password, false]);
-        if (sync_info.user.subscription)
+        if (sync_info.user.subscription) {
+//            is_plus = true
             return {
                 level: sync_info.user.subscription.level.toLowerCase(),
                 expires: sync_info.user.subscription
                     ? new Date(sync_info.user.subscription.expires_unix * 1000.0)
                     : null,
             };
-        else return { level: "free", expires: null };
+        }
+        else {
+            return { level: "free", expires: null }
+//            is_plus = false
+//            throw "iOS testflight only available to Plus users / iOS 测试版目前只对付费用户开放";
+        }
     },
 
     async daemon_rpc(method, args) {

@@ -1,0 +1,40 @@
+{
+  "identifier" : "DC4DEA7C",
+  "nonRenewingSubscriptions" : [
+    {
+      "displayPrice" : "4.0",
+      "familyShareable" : false,
+      "internalID" : "6479270931",
+      "localizations" : [
+        {
+          "description" : "1 month of unlimited speed",
+          "displayName" : "1 month Plus",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "一个月的无限速度",
+          "displayName" : "1月Plus",
+          "locale" : "zh_CN"
+        }
+      ],
+      "productID" : "1moplus",
+      "referenceName" : "1-month-plus",
+      "type" : "NonRenewingSubscription"
+    }
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "1638148282",
+    "_developerTeamID" : "5M9G3KQ5FK",
+    "_lastSynchronizedDate" : 731888944.52583802
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}
