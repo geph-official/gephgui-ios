@@ -12,6 +12,7 @@ import QuartzCore
 class PacketTunnelProvider: NEPacketTunnelProvider {
     override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
         NSLog("TUNNEL STARTED!")
+//        Darwin.sleep(5)
         NSLog("DEBUGPACK_PATH = %@", DEBUGPACK_PATH)
         let defaults = UserDefaults.standard
         var args = ""
@@ -20,12 +21,12 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         // which is a mapping of the string "args" to an NSString,
         // which is a serialized JSON array of args we pass to geph
         
-        Thread.detachNewThread({
-            while(true) {
-                NSLog("still alive!")
-                Thread.sleep(forTimeInterval: TimeInterval(5))
-            }
-        })
+//        Thread.detachNewThread({
+//            while(true) {
+//                NSLog("still alive!")
+//                Thread.sleep(forTimeInterval: TimeInterval(5))
+//            }
+//        })
         
         if let options_unwrapped = options {
             NSLog("called from gephgui")
@@ -64,19 +65,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 //            }
 //        })
 //
-        //        // call get_bridges in a loop until we have the list of bridges
-        //        var bridges_val = get_bridges_wrapper()
-        //        while bridges_val.1 <= 2 {             // NOTE: an empty array of bridges has length 2, not 0
-        //            NSLog("no bridges yet")
-        //            Thread.sleep(forTimeInterval: 1)
-        //
-        //            bridges_val = get_bridges_wrapper()
-        //            if bridges_val.1 == -1 {
-        //                NSLog("error getting bridges! error!")
-        //            }
-        //        }
-        //        NSLog("got bridges! %@", bridges_val.0)
-        
+
         // start packet tunnel
         let settings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: "1");
         let addresses: [String] = ["123.123.123.123"];
@@ -85,7 +74,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         settings.ipv4Settings?.includedRoutes = [NEIPv4Route.default()]; // all routes
         //      settings.ipv4Settings?.excludedRoutes = bridges_val.0
         settings.dnsSettings = .init(servers: ["1.1.1.1"])
-        settings.mtu = 1280
+        settings.mtu = 1450
         
         setTunnelNetworkSettings(settings)
         
@@ -97,6 +86,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
             while true {
                 let (pkts, _) = await self.packetFlow.readPackets();
                 for p in pkts {
+//                    NSLog("%d", p.count)
                     upload_to_geph(p)
                 }
             }
@@ -104,7 +94,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         
         Thread.detachNewThread({
             NSLog("STARTED DOWN LOOP")
-            var buffer = [UInt8](repeating: 0, count: 2000);
+            var buffer = [UInt8](repeating: 0, count: 14500);
             let p =  Array(repeating: NSNumber(2), count: 1)
             while true {
                 let retlen = download_from_geph(buffer: &buffer)
@@ -112,6 +102,8 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                     autoreleasepool {
                         let toWrite = Data(bytesNoCopy: &buffer, count: Int(retlen), // mallocs 71 bytes
                                            deallocator: Data.Deallocator.none);
+//                        let hexString = toWrite.map { String(format: "%02X", $0) }.joined(separator: " ")
+//                        NSLog("%@", hexString)
                         self.packetFlow.writePackets([toWrite], withProtocols: p) // mallocs 48 bytes
                     }
                 }

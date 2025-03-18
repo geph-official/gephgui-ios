@@ -152,7 +152,7 @@ func handle_daemon_rpc(_ message: String) async throws -> String {
     
     let secret_path = get_daemon_rpc_secret()
     let url_str = "http://127.0.0.1:9809/" + secret_path
-    eprint("DAEMON_RPC_URL = ", url_str)
+    // eprint("DAEMON_RPC_URL = ", url_str)
     var request = URLRequest(
         url: URL(string: url_str)!,
         cachePolicy: .reloadIgnoringLocalCacheData
@@ -172,7 +172,7 @@ func handle_daemon_rpc(_ message: String) async throws -> String {
         throw "Error fetching response in daemon rpc!"
     }
     let resp = String(decoding: data!, as: UTF8.self)
-    eprint("DAEMON_RPC req = ", line, "resp = ", resp)
+    // eprint("DAEMON_RPC req = ", line, "resp = ", resp)
     return resp
 }
 
@@ -200,8 +200,11 @@ func handle_debugpack() throws {
 
 func start_daemon(_ args_json_str: String) throws {
     let start_opt = try make_start_opt(args_json_str)
-    NSLog(start_opt)
+    NSLog("Starting DAEMON!")
     let daemon_rpc_secret = get_daemon_rpc_secret()
+    
+    // Set RUST_MIN_STACK to 512 KB (512 * 1024 = 524288 bytes)
+    setenv("RUST_MIN_STACK", "131072", 1)
     
     let retcode = start(start_opt, daemon_rpc_secret);
     if retcode < 0 {
@@ -302,6 +305,7 @@ func fetchHasSubscription() {
 
 func inapp_purchase() {
     NSLog("inapp_purchase!")
+
     guard let product = product else {
         NSLog("no product...")
         return
