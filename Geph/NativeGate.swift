@@ -81,7 +81,7 @@ class NativeGate: NSObject, WKScriptMessageHandler {
             return []
             
         case "export_debug_pack":
-            try handle_export_debugpack()
+            throw "Not implemented"
             return true
             
         case "get_app_icon_url":
@@ -89,7 +89,7 @@ class NativeGate: NSObject, WKScriptMessageHandler {
             throw "Not applicable on iOS"
             
         case "get_debug_pack":
-            return try getDebugLogs()
+            throw "Not implemented"
             
         case "get_native_info":
             return [

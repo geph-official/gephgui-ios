@@ -99,11 +99,11 @@ extension ViewController {
             };
             
             // Platform capability properties
-            window.NATIVE_GATE.supports_listen_all = true;
+            window.NATIVE_GATE.supports_listen_all = false;
             window.NATIVE_GATE.supports_app_whitelist = false;
             window.NATIVE_GATE.supports_prc_whitelist = true;
-            window.NATIVE_GATE.supports_proxy_conf = true;
-            window.NATIVE_GATE.supports_vpn_conf = true;
+            window.NATIVE_GATE.supports_proxy_conf = false;
+            window.NATIVE_GATE.supports_vpn_conf = false;
             window.NATIVE_GATE.supports_autoupdate = false;
             """,
             injectionTime: .atDocumentStart,
