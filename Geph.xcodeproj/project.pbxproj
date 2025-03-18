@@ -10,7 +10,6 @@
 		9B38C8802B44AD3D001690A7 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B7886E927EA506F00D9555F /* NetworkExtension.framework */; };
 		9B77DA9A27F0DEE7001D323F /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B77DA9927F0DEE7001D323F /* Utils.swift */; };
 		9B7886B627E8DDB100D9555F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886B527E8DDB100D9555F /* AppDelegate.swift */; };
-		9B7886B827E8DDB100D9555F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886B727E8DDB100D9555F /* SceneDelegate.swift */; };
 		9B7886BA27E8DDB100D9555F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886B927E8DDB100D9555F /* ViewController.swift */; };
 		9B7886BD27E8DDB100D9555F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B7886BB27E8DDB100D9555F /* Main.storyboard */; };
 		9B7886BF27E8DDB200D9555F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9B7886BE27E8DDB200D9555F /* Assets.xcassets */; };
@@ -24,9 +23,10 @@
 		9B7978A629343E9C009B8A3C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B77DA9927F0DEE7001D323F /* Utils.swift */; };
 		9BC7997F2937110900438A8B /* init.js in Resources */ = {isa = PBXBuildFile; fileRef = 9BC7997E2937110900438A8B /* init.js */; };
 		9BC799852937134400438A8B /* dist in Resources */ = {isa = PBXBuildFile; fileRef = 9BC799842937134400438A8B /* dist */; };
-		9BCDC88627EBADCE0011290C /* test.html in Resources */ = {isa = PBXBuildFile; fileRef = 9BCDC88527EBADCE0011290C /* test.html */; };
 		9BE47CD027EE68630066390F /* libgeph4client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE47CCE27EE1F6F0066390F /* libgeph4client.a */; };
 		9BE47CD127EE687D0066390F /* libgeph4client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE47CCE27EE1F6F0066390F /* libgeph4client.a */; };
+		9BE5E7292D89EF0600540638 /* libGeph4Client in Resources */ = {isa = PBXBuildFile; fileRef = 9BE5E7282D89EF0600540638 /* libGeph4Client */; };
+		9BE5E72B2D89F3BB00540638 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5E72A2D89F3BB00540638 /* SceneDelegate.swift */; };
 		9BFB49642B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */; };
 		9BFB49652B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */; };
 		9BFB49662B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */; };
@@ -77,7 +77,6 @@
 		9B77DA9927F0DEE7001D323F /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		9B7886B227E8DDB100D9555F /* Geph.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Geph.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B7886B527E8DDB100D9555F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		9B7886B727E8DDB100D9555F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		9B7886B927E8DDB100D9555F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		9B7886BC27E8DDB100D9555F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9B7886BE27E8DDB200D9555F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -96,8 +95,9 @@
 		9B7886F527EA517C00D9555F /* daemon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = daemon.entitlements; sourceTree = "<group>"; };
 		9BC7997E2937110900438A8B /* init.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = init.js; sourceTree = "<group>"; };
 		9BC799842937134400438A8B /* dist */ = {isa = PBXFileReference; lastKnownFileType = folder; path = dist; sourceTree = "<group>"; };
-		9BCDC88527EBADCE0011290C /* test.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = test.html; sourceTree = "<group>"; };
 		9BE47CCE27EE1F6F0066390F /* libgeph4client.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgeph4client.a; path = libGeph4Client/libgeph4client.a; sourceTree = "<group>"; };
+		9BE5E7282D89EF0600540638 /* libGeph4Client */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libGeph4Client; sourceTree = SOURCE_ROOT; };
+		9BE5E72A2D89F3BB00540638 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = Geph/SceneDelegate.swift; sourceTree = SOURCE_ROOT; };
 		9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = SyncedProducts.storekit; path = Geph/SyncedProducts.storekit; sourceTree = SOURCE_ROOT; };
 		9BFBBF162826FC8500677CD3 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -168,12 +168,12 @@
 				9BC799842937134400438A8B /* dist */,
 				9B7886E727EA506F00D9555F /* geph.entitlements */,
 				9BC7997E2937110900438A8B /* init.js */,
+				9BE5E72A2D89F3BB00540638 /* SceneDelegate.swift */,
 				9B7886B527E8DDB100D9555F /* AppDelegate.swift */,
-				9B7886B727E8DDB100D9555F /* SceneDelegate.swift */,
 				9B7886B927E8DDB100D9555F /* ViewController.swift */,
 				9B77DA9927F0DEE7001D323F /* Utils.swift */,
 				9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */,
-				9BCDC88527EBADCE0011290C /* test.html */,
+				9BE5E7282D89EF0600540638 /* libGeph4Client */,
 				9B7886BB27E8DDB100D9555F /* Main.storyboard */,
 				9B7886BE27E8DDB200D9555F /* Assets.xcassets */,
 				9B7886C027E8DDB200D9555F /* LaunchScreen.storyboard */,
@@ -351,9 +351,9 @@
 				9BC799852937134400438A8B /* dist in Resources */,
 				9BC7997F2937110900438A8B /* init.js in Resources */,
 				9B7886C227E8DDB200D9555F /* LaunchScreen.storyboard in Resources */,
+				9BE5E7292D89EF0600540638 /* libGeph4Client in Resources */,
 				9B7886BF27E8DDB200D9555F /* Assets.xcassets in Resources */,
 				9B7886BD27E8DDB100D9555F /* Main.storyboard in Resources */,
-				9BCDC88627EBADCE0011290C /* test.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,8 +411,8 @@
 			files = (
 				9B7886BA27E8DDB100D9555F /* ViewController.swift in Sources */,
 				9B7886B627E8DDB100D9555F /* AppDelegate.swift in Sources */,
-				9B7886B827E8DDB100D9555F /* SceneDelegate.swift in Sources */,
 				9B77DA9A27F0DEE7001D323F /* Utils.swift in Sources */,
+				9BE5E72B2D89F3BB00540638 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

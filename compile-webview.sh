@@ -2,6 +2,6 @@
 
 cd ./gephgui; 
 source ~/.bashrc; 
-pnpm i; pnpm build;
+npm i; npm build;
 
 rsync -r dist/ ../Geph/dist/
