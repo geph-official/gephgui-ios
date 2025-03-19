@@ -1,33 +1,20 @@
-//
-//  ViewController.swift
-//  geph
-//
-//  Created by Eric Dong on 3/21/22.
-//
-
 import NetworkExtension
-import StoreKit
 import UIKit
 import WebKit
 
 class ViewController: UIViewController {
+    func inject_success(_ callback: String, _ message: String) async throws {
+      let js = "\(callback)[0](\(message)); delete \(callback)"
+      //        eprint("js: ", js)
+      try await webView.evaluateJavaScript(js)
+    }
 
-  //    func presentOfferCodeRedeemSheet() {
-  //        guard let windowScene = view.window?.windowScene else {
-  //            print("Unable to get the current window scene")
-  //            return
-  //        }
-  //
-  //        Task {
-  //            do {
-  //                try await StoreKit.AppStore.presentOfferCodeRedeemSheet(in: windowScene)
-  //            } catch {
-  //                print("Error presenting offer code redeem sheet: \(error)")
-  //                // Handle the error appropriately
-  //            }
-  //        }
-  //    }
-
+    func inject_reject(_ callback: String, _ message: String) async throws {
+      let js = "\(callback)[1](\(message)); delete \(callback)"
+      //        eprint("js: ", js)
+      try await webView.evaluateJavaScript(js)
+    }
+    
   func showSubscriptionExistsAlert() {
     // Create the alert controller
     let alertController = UIAlertController(
@@ -126,41 +113,6 @@ class ViewController: UIViewController {
     return webView
   }()
 
-  func getManager() async throws -> NETunnelProviderManager {
-    let managers = try await NETunnelProviderManager.loadAllFromPreferences()
-    if managers.isEmpty {
-      let manager = NETunnelProviderManager()
-      manager.localizedDescription = "geph-daemon"
-      let proto = NETunnelProviderProtocol()
-      // WARNING: This must match the bundle identifier of the app extension containing packet tunnel provider.
-      proto.providerBundleIdentifier = "geph.io.daemon"
-      proto.serverAddress = "geph"
-      manager.protocolConfiguration = proto
-      try await manager.loadFromPreferences()
-      manager.isEnabled = true
-      try await manager.saveToPreferences()
-      try await manager.loadFromPreferences()
-      return manager
-    } else {
-      let man = managers[0]
-      man.isEnabled = true
-      try await man.saveToPreferences()
-      return man
-    }
-  }
-
-  func inject_success(_ callback: String, _ message: String) async throws {
-    let js = "\(callback)[0](\(message)); delete \(callback)"
-    //        eprint("js: ", js)
-    try await webView.evaluateJavaScript(js)
-  }
-
-  func inject_reject(_ callback: String, _ message: String) async throws {
-    let js = "\(callback)[1](\(message)); delete \(callback)"
-    //        eprint("js: ", js)
-    try await webView.evaluateJavaScript(js)
-  }
-
   func handle_export_debugpack() throws {
     let _ = try handle_debugpack()
     let document_picker = UIDocumentPickerViewController(
@@ -206,79 +158,6 @@ extension ViewController: WKNavigationDelegate {
   }
 }
 
-extension ViewController: WKScriptMessageHandler {
-  func userContentController(
-    _ userContentController: WKUserContentController, didReceive message: WKScriptMessage
-  ) {
-    Task {
-      if let messageBody = message.body as? [String] {
-        //                eprint("WebView CALLED \(message.name) WITH \(messageBody)")
-        let verb = messageBody[0]
-        let args = messageBody[1]  // args is a json-encoded array of strings
-        let callback = messageBody[2]
-        //                eprint("callback = ", callback)
-        do {
-          if message.name == "callRpc" {
-            switch verb {
-            case "start_daemon":
-              let res = try start_tunnel(args, try await getManager())
-              try await self.inject_success(callback, res)
-            case "stop_daemon":
-
-              let manager = try await getManager()
-              manager.connection.stopVPNTunnel()
-
-              Task {
-                while true {
-                  if manager.connection.status == NEVPNStatus.disconnected {
-                    do {
-                      eprint("callback = ", callback)
-                      try await self.inject_success(callback, "")
-                    } catch {
-                      eprint("OH NO! ", error.localizedDescription)
-                    }
-                    break
-                  } else {
-                    try await Task.sleep(nanoseconds: 100_000_000)
-                  }
-                }
-              }
-
-            case "sync":
-              let ret = try await callBlockingSyncFunc {
-                try handle_sync(args)
-              }
-              try await inject_success(callback, ret)
-            case "daemon_rpc":
-              let res = try await handle_daemon_rpc(args)
-              try await inject_success(callback, res)
-            case "binder_rpc":
-              let ret = try await callBlockingSyncFunc {
-                try handle_binder_rpc(args)
-              }
-              eprint("binder_rpc before calling inject_success!!!!!")
-              try await inject_success(callback, ret)
-              eprint("binder_rpc successfully called inject_success~~~~~")
-            case "export_logs":
-              try self.handle_export_debugpack()
-              try await inject_success(callback, "")
-            case "version":
-              let version = try handle_version()
-              try await inject_success(callback, jsonify(version))
-            case _:
-              throw "invalid rpc input!"
-            }
-          }
-        } catch {
-          NSLog("ERROR!! %@", error.localizedDescription)
-          try await self.inject_reject(callback, jsonify(error.localizedDescription))
-        }
-      } else {
-        NSLog("cannot parse rpc argument!!")
-      }
-    }
-  }
-}
 
 extension ViewController: UIDocumentPickerDelegate {
   func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL])
@@ -290,17 +169,3 @@ extension ViewController: UIDocumentPickerDelegate {
   }
 }
 
-func callBlockingSyncFunc(_ function: @escaping () throws -> String) async -> String {
-  return await withCheckedContinuation { continuation in
-    DispatchQueue.global(qos: .background).async {
-      do {
-        let result = try function()
-        continuation.resume(returning: result)
-      } catch {
-        // Handle the error. For example, return a default value or error message.
-        // Adjust this according to your needs.
-        continuation.resume(returning: "Error: \(error)")
-      }
-    }
-  }
-}

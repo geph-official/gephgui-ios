@@ -133,23 +133,3 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         // Add code here to wake up.
     }
 }
-
-//uploads a single packet to geph
-func upload_to_geph(_ p: Data) {
-    var pkt = [UInt8](p)
-    //    let start_time = CACurrentMediaTime();
-    send_vpn(DAEMON_KEY, &pkt, Int32(pkt.count))
-    //    let end_time = CACurrentMediaTime();
-    //    NSLog("upload took %g ms", 1000.0 * (end_time - start_time))
-}
-
-//downloads a single packet from geph
-func download_from_geph(buffer: inout [UInt8]) -> Int32 {
-    var retlen = Int32(0)
-    let buflen = buffer.count;
-    buffer.withUnsafeMutableBytes({bufferPointer in
-        retlen = recv_vpn(DAEMON_KEY, bufferPointer.baseAddress, Int32(buflen))
-    })
-    
-    return retlen
-}

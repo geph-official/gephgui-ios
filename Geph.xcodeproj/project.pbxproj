@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		9B38C8802B44AD3D001690A7 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B7886E927EA506F00D9555F /* NetworkExtension.framework */; };
-		9B77DA9A27F0DEE7001D323F /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B77DA9927F0DEE7001D323F /* Utils.swift */; };
 		9B7886B627E8DDB100D9555F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886B527E8DDB100D9555F /* AppDelegate.swift */; };
 		9B7886BA27E8DDB100D9555F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886B927E8DDB100D9555F /* ViewController.swift */; };
 		9B7886BD27E8DDB100D9555F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B7886BB27E8DDB100D9555F /* Main.storyboard */; };
@@ -20,11 +19,16 @@
 		9B7886F027EA517C00D9555F /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B7886E927EA506F00D9555F /* NetworkExtension.framework */; };
 		9B7886F327EA517C00D9555F /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7886F227EA517C00D9555F /* PacketTunnelProvider.swift */; };
 		9B7886F827EA517C00D9555F /* daemon.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9B7886EF27EA517C00D9555F /* daemon.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		9B7978A629343E9C009B8A3C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B77DA9927F0DEE7001D323F /* Utils.swift */; };
+		9B9F7DD92D8A476D00AD2B0B /* Geph4ClientKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBFD1A32D8A360C004B78FE /* Geph4ClientKit.swift */; };
+		9B9F7DDA2D8A476E00AD2B0B /* Geph4ClientKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBFD1A32D8A360C004B78FE /* Geph4ClientKit.swift */; };
+		9B9F7DDB2D8A481400AD2B0B /* libgeph4client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE47CCE27EE1F6F0066390F /* libgeph4client.a */; };
+		9B9F7DDC2D8A482800AD2B0B /* libgeph4client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE47CCE27EE1F6F0066390F /* libgeph4client.a */; };
+		9B9F7DDD2D8A484800AD2B0B /* UtilsAndConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBFD17E2D8A225E004B78FE /* UtilsAndConstants.swift */; };
+		9BBFD1792D8A199F004B78FE /* InAppPurchase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBFD1782D8A199F004B78FE /* InAppPurchase.swift */; };
+		9BBFD17B2D8A1DEB004B78FE /* NativeGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBFD17A2D8A1DEB004B78FE /* NativeGate.swift */; };
+		9BBFD17F2D8A225E004B78FE /* UtilsAndConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBFD17E2D8A225E004B78FE /* UtilsAndConstants.swift */; };
 		9BC7997F2937110900438A8B /* init.js in Resources */ = {isa = PBXBuildFile; fileRef = 9BC7997E2937110900438A8B /* init.js */; };
 		9BC799852937134400438A8B /* dist in Resources */ = {isa = PBXBuildFile; fileRef = 9BC799842937134400438A8B /* dist */; };
-		9BE47CD027EE68630066390F /* libgeph4client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE47CCE27EE1F6F0066390F /* libgeph4client.a */; };
-		9BE47CD127EE687D0066390F /* libgeph4client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE47CCE27EE1F6F0066390F /* libgeph4client.a */; };
 		9BE5E7292D89EF0600540638 /* libGeph4Client in Resources */ = {isa = PBXBuildFile; fileRef = 9BE5E7282D89EF0600540638 /* libGeph4Client */; };
 		9BE5E72B2D89F3BB00540638 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5E72A2D89F3BB00540638 /* SceneDelegate.swift */; };
 		9BFB49642B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */; };
@@ -70,11 +74,30 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9BBFD19F2D8A343F004B78FE /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9BBFD1AB2D8A3B57004B78FE /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		9B15FD0728DEA2480084FB88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = ../Geph/en.lproj/Main.strings; sourceTree = "<group>"; };
-		9B77DA9927F0DEE7001D323F /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		9B7886B227E8DDB100D9555F /* Geph.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Geph.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B7886B527E8DDB100D9555F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9B7886B927E8DDB100D9555F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -93,6 +116,10 @@
 		9B7886F227EA517C00D9555F /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
 		9B7886F427EA517C00D9555F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9B7886F527EA517C00D9555F /* daemon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = daemon.entitlements; sourceTree = "<group>"; };
+		9BBFD1782D8A199F004B78FE /* InAppPurchase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InAppPurchase.swift; path = Geph/InAppPurchase.swift; sourceTree = SOURCE_ROOT; };
+		9BBFD17A2D8A1DEB004B78FE /* NativeGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NativeGate.swift; path = Geph/NativeGate.swift; sourceTree = SOURCE_ROOT; };
+		9BBFD17E2D8A225E004B78FE /* UtilsAndConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilsAndConstants.swift; sourceTree = "<group>"; };
+		9BBFD1A32D8A360C004B78FE /* Geph4ClientKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geph4ClientKit.swift; sourceTree = "<group>"; };
 		9BC7997E2937110900438A8B /* init.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = init.js; sourceTree = "<group>"; };
 		9BC799842937134400438A8B /* dist */ = {isa = PBXFileReference; lastKnownFileType = folder; path = dist; sourceTree = "<group>"; };
 		9BE47CCE27EE1F6F0066390F /* libgeph4client.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgeph4client.a; path = libGeph4Client/libgeph4client.a; sourceTree = "<group>"; };
@@ -107,8 +134,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9BE47CD027EE68630066390F /* libgeph4client.a in Frameworks */,
 				9B38C8802B44AD3D001690A7 /* NetworkExtension.framework in Frameworks */,
+				9B9F7DDC2D8A482800AD2B0B /* libgeph4client.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,7 +158,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B7886F027EA517C00D9555F /* NetworkExtension.framework in Frameworks */,
-				9BE47CD127EE687D0066390F /* libgeph4client.a in Frameworks */,
+				9B9F7DDB2D8A481400AD2B0B /* libgeph4client.a in Frameworks */,
 				9BFBBF172826FC8B00677CD3 /* libresolv.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -168,10 +195,13 @@
 				9BC799842937134400438A8B /* dist */,
 				9B7886E727EA506F00D9555F /* geph.entitlements */,
 				9BC7997E2937110900438A8B /* init.js */,
+				9BBFD1782D8A199F004B78FE /* InAppPurchase.swift */,
 				9BE5E72A2D89F3BB00540638 /* SceneDelegate.swift */,
 				9B7886B527E8DDB100D9555F /* AppDelegate.swift */,
 				9B7886B927E8DDB100D9555F /* ViewController.swift */,
-				9B77DA9927F0DEE7001D323F /* Utils.swift */,
+				9BBFD17A2D8A1DEB004B78FE /* NativeGate.swift */,
+				9BBFD17E2D8A225E004B78FE /* UtilsAndConstants.swift */,
+				9BBFD1A32D8A360C004B78FE /* Geph4ClientKit.swift */,
 				9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */,
 				9BE5E7282D89EF0600540638 /* libGeph4Client */,
 				9B7886BB27E8DDB100D9555F /* Main.storyboard */,
@@ -230,6 +260,7 @@
 				9B7886AF27E8DDB100D9555F /* Frameworks */,
 				9B7886B027E8DDB100D9555F /* Resources */,
 				9B7886FC27EA517C00D9555F /* Embed Foundation Extensions */,
+				9BBFD19F2D8A343F004B78FE /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -281,10 +312,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9B7886F927EA517C00D9555F /* Build configuration list for PBXNativeTarget "daemon" */;
 			buildPhases = (
-				9B9A07A92D7EA4530087555A /* ShellScript */,
 				9B7886EB27EA517C00D9555F /* Sources */,
 				9B7886EC27EA517C00D9555F /* Frameworks */,
 				9B7886ED27EA517C00D9555F /* Resources */,
+				9BBFD1AB2D8A3B57004B78FE /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -302,7 +333,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 1320;
+				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1530;
 				TargetAttributes = {
 					9B7886B127E8DDB100D9555F = {
@@ -383,36 +414,18 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		9B9A07A92D7EA4530087555A /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(PROJECT_DIR)/libGeph4Client/libgeph4client.a",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\n/Users/miyuruasuka/Desktop/GEPH4/geph4-client/ios_build.sh\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		9B7886AE27E8DDB100D9555F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B9F7DDA2D8A476E00AD2B0B /* Geph4ClientKit.swift in Sources */,
 				9B7886BA27E8DDB100D9555F /* ViewController.swift in Sources */,
 				9B7886B627E8DDB100D9555F /* AppDelegate.swift in Sources */,
-				9B77DA9A27F0DEE7001D323F /* Utils.swift in Sources */,
+				9BBFD17B2D8A1DEB004B78FE /* NativeGate.swift in Sources */,
+				9BBFD17F2D8A225E004B78FE /* UtilsAndConstants.swift in Sources */,
 				9BE5E72B2D89F3BB00540638 /* SceneDelegate.swift in Sources */,
+				9BBFD1792D8A199F004B78FE /* InAppPurchase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,8 +450,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9B7978A629343E9C009B8A3C /* Utils.swift in Sources */,
+				9B9F7DD92D8A476D00AD2B0B /* Geph4ClientKit.swift in Sources */,
 				9B7886F327EA517C00D9555F /* PacketTunnelProvider.swift in Sources */,
+				9B9F7DDD2D8A484800AD2B0B /* UtilsAndConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -632,7 +646,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/libGeph4Client/",
+					"$(PROJECT_DIR)/libGeph4Client",
+				);
 				MARKETING_VERSION = 0.91;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io;
@@ -677,7 +694,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/libGeph4Client/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/libGeph4Client/",
+					"$(PROJECT_DIR)/libGeph4Client",
+				);
 				MARKETING_VERSION = 0.91;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io;
@@ -798,6 +818,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/libGeph4Client/",
+					"$(PROJECT_DIR)/libGeph4Client",
 				);
 				MARKETING_VERSION = 0.5;
 				ONLY_ACTIVE_ARCH = YES;
@@ -832,6 +853,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/libGeph4Client/",
+					"$(PROJECT_DIR)/libGeph4Client",
 				);
 				MARKETING_VERSION = 0.5;
 				ONLY_ACTIVE_ARCH = NO;
