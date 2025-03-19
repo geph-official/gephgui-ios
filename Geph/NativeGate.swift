@@ -4,6 +4,20 @@ import WebKit
 import NetworkExtension
 
 extension ViewController: WKScriptMessageHandler {
+    // MARK: - JavaScript Interaction
+    
+    /// Injects success callback into JavaScript
+    func injectSuccess(_ callback: String, _ message: String) async throws {
+        let js = "\(callback)[0](\(message)); delete \(callback)"
+        try await webView.evaluateJavaScript(js)
+    }
+    
+    /// Injects rejection callback into JavaScript
+    func injectReject(_ callback: String, _ message: String) async throws {
+        let js = "\(callback)[1](\(message)); delete \(callback)"
+        try await webView.evaluateJavaScript(js)
+    }
+    
   func userContentController(
     _ userContentController: WKUserContentController, didReceive message: WKScriptMessage
   ) {
@@ -19,7 +33,7 @@ extension ViewController: WKScriptMessageHandler {
             switch verb {
             case "start_daemon":
               let res = try start_tunnel(args, try await getManager())
-              try await self.inject_success(callback, res)
+              try await injectSuccess(callback, res)
             case "stop_daemon":
 
               let manager = try await getManager()
@@ -30,7 +44,7 @@ extension ViewController: WKScriptMessageHandler {
                   if manager.connection.status == NEVPNStatus.disconnected {
                     do {
                       eprint("callback = ", callback)
-                      try await self.inject_success(callback, "")
+                      try await injectSuccess(callback, "")
                     } catch {
                       eprint("OH NO! ", error.localizedDescription)
                     }
@@ -45,30 +59,30 @@ extension ViewController: WKScriptMessageHandler {
               let ret = await callBlockingSyncFunc {
                 try handle_sync(args)
               }
-              try await inject_success(callback, ret)
+              try await injectSuccess(callback, ret)
             case "daemon_rpc":
               let res = try await handle_daemon_rpc(args)
-              try await inject_success(callback, res)
+              try await injectSuccess(callback, res)
             case "binder_rpc":
               let ret = await callBlockingSyncFunc {
                 try handle_binder_rpc(args)
               }
               eprint("binder_rpc before calling inject_success!!!!!")
-              try await inject_success(callback, ret)
+              try await injectSuccess(callback, ret)
               eprint("binder_rpc successfully called inject_success~~~~~")
             case "export_logs":
-              try self.handle_export_debugpack()
-              try await inject_success(callback, "")
+              try self.handleExportDebugpack()
+              try await injectSuccess(callback, "")
             case "version":
               let version = try handle_version()
-              try await inject_success(callback, jsonify(version))
+              try await injectSuccess(callback, jsonify(version))
             case _:
               throw "invalid rpc input!"
             }
           }
         } catch {
           NSLog("ERROR!! %@", error.localizedDescription)
-          try await self.inject_reject(callback, jsonify(error.localizedDescription))
+          try await injectReject(callback, jsonify(error.localizedDescription))
         }
       } else {
         NSLog("cannot parse rpc argument!!")

@@ -1,10 +1,3 @@
-//
-//  SceneDelegate.swift
-//  geph
-//
-//  Created by Eric Dong on 3/21/22.
-//
-
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {

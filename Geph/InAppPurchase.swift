@@ -28,8 +28,8 @@ func fetchHasSubscription() {
   }
 }
 
-func inapp_purchase() {
-  NSLog("inapp_purchase!")
+func inAppPurchase() {
+  NSLog("inAppPurchase!")
 
   guard let product = product else {
     NSLog("no product...")

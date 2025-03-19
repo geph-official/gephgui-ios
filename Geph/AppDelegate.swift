@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  geph
-//
-//  Created by Eric Dong on 3/21/22.
-//
-
 import StoreKit
 import UIKit
 

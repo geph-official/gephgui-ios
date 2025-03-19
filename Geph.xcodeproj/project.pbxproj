@@ -24,13 +24,14 @@
 		9B9F7DDB2D8A481400AD2B0B /* libgeph4client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE47CCE27EE1F6F0066390F /* libgeph4client.a */; };
 		9B9F7DDC2D8A482800AD2B0B /* libgeph4client.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE47CCE27EE1F6F0066390F /* libgeph4client.a */; };
 		9B9F7DDD2D8A484800AD2B0B /* UtilsAndConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBFD17E2D8A225E004B78FE /* UtilsAndConstants.swift */; };
+		9B9F7DE32D8A50A500AD2B0B /* WebViewSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B9F7DE12D8A50A500AD2B0B /* WebViewSetup.swift */; };
+		9B9F7DE52D8A589500AD2B0B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B9F7DE42D8A589500AD2B0B /* SceneDelegate.swift */; };
 		9BBFD1792D8A199F004B78FE /* InAppPurchase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBFD1782D8A199F004B78FE /* InAppPurchase.swift */; };
 		9BBFD17B2D8A1DEB004B78FE /* NativeGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBFD17A2D8A1DEB004B78FE /* NativeGate.swift */; };
 		9BBFD17F2D8A225E004B78FE /* UtilsAndConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBFD17E2D8A225E004B78FE /* UtilsAndConstants.swift */; };
 		9BC7997F2937110900438A8B /* init.js in Resources */ = {isa = PBXBuildFile; fileRef = 9BC7997E2937110900438A8B /* init.js */; };
 		9BC799852937134400438A8B /* dist in Resources */ = {isa = PBXBuildFile; fileRef = 9BC799842937134400438A8B /* dist */; };
 		9BE5E7292D89EF0600540638 /* libGeph4Client in Resources */ = {isa = PBXBuildFile; fileRef = 9BE5E7282D89EF0600540638 /* libGeph4Client */; };
-		9BE5E72B2D89F3BB00540638 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5E72A2D89F3BB00540638 /* SceneDelegate.swift */; };
 		9BFB49642B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */; };
 		9BFB49652B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */; };
 		9BFB49662B9FBD2D00E8E9E1 /* SyncedProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */; };
@@ -116,6 +117,8 @@
 		9B7886F227EA517C00D9555F /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
 		9B7886F427EA517C00D9555F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9B7886F527EA517C00D9555F /* daemon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = daemon.entitlements; sourceTree = "<group>"; };
+		9B9F7DE12D8A50A500AD2B0B /* WebViewSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebViewSetup.swift; path = Geph/WebViewSetup.swift; sourceTree = SOURCE_ROOT; };
+		9B9F7DE42D8A589500AD2B0B /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = Geph/SceneDelegate.swift; sourceTree = SOURCE_ROOT; };
 		9BBFD1782D8A199F004B78FE /* InAppPurchase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InAppPurchase.swift; path = Geph/InAppPurchase.swift; sourceTree = SOURCE_ROOT; };
 		9BBFD17A2D8A1DEB004B78FE /* NativeGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NativeGate.swift; path = Geph/NativeGate.swift; sourceTree = SOURCE_ROOT; };
 		9BBFD17E2D8A225E004B78FE /* UtilsAndConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilsAndConstants.swift; sourceTree = "<group>"; };
@@ -124,7 +127,6 @@
 		9BC799842937134400438A8B /* dist */ = {isa = PBXFileReference; lastKnownFileType = folder; path = dist; sourceTree = "<group>"; };
 		9BE47CCE27EE1F6F0066390F /* libgeph4client.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgeph4client.a; path = libGeph4Client/libgeph4client.a; sourceTree = "<group>"; };
 		9BE5E7282D89EF0600540638 /* libGeph4Client */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libGeph4Client; sourceTree = SOURCE_ROOT; };
-		9BE5E72A2D89F3BB00540638 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = Geph/SceneDelegate.swift; sourceTree = SOURCE_ROOT; };
 		9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = SyncedProducts.storekit; path = Geph/SyncedProducts.storekit; sourceTree = SOURCE_ROOT; };
 		9BFBBF162826FC8500677CD3 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -195,13 +197,14 @@
 				9BC799842937134400438A8B /* dist */,
 				9B7886E727EA506F00D9555F /* geph.entitlements */,
 				9BC7997E2937110900438A8B /* init.js */,
-				9BBFD1782D8A199F004B78FE /* InAppPurchase.swift */,
-				9BE5E72A2D89F3BB00540638 /* SceneDelegate.swift */,
 				9B7886B527E8DDB100D9555F /* AppDelegate.swift */,
-				9B7886B927E8DDB100D9555F /* ViewController.swift */,
-				9BBFD17A2D8A1DEB004B78FE /* NativeGate.swift */,
+				9B9F7DE42D8A589500AD2B0B /* SceneDelegate.swift */,
 				9BBFD17E2D8A225E004B78FE /* UtilsAndConstants.swift */,
+				9BBFD1782D8A199F004B78FE /* InAppPurchase.swift */,
 				9BBFD1A32D8A360C004B78FE /* Geph4ClientKit.swift */,
+				9B7886B927E8DDB100D9555F /* ViewController.swift */,
+				9B9F7DE12D8A50A500AD2B0B /* WebViewSetup.swift */,
+				9BBFD17A2D8A1DEB004B78FE /* NativeGate.swift */,
 				9BFB49632B9FBD2D00E8E9E1 /* SyncedProducts.storekit */,
 				9BE5E7282D89EF0600540638 /* libGeph4Client */,
 				9B7886BB27E8DDB100D9555F /* Main.storyboard */,
@@ -423,9 +426,10 @@
 				9B7886BA27E8DDB100D9555F /* ViewController.swift in Sources */,
 				9B7886B627E8DDB100D9555F /* AppDelegate.swift in Sources */,
 				9BBFD17B2D8A1DEB004B78FE /* NativeGate.swift in Sources */,
+				9B9F7DE32D8A50A500AD2B0B /* WebViewSetup.swift in Sources */,
 				9BBFD17F2D8A225E004B78FE /* UtilsAndConstants.swift in Sources */,
-				9BE5E72B2D89F3BB00540638 /* SceneDelegate.swift in Sources */,
 				9BBFD1792D8A199F004B78FE /* InAppPurchase.swift in Sources */,
+				9B9F7DE52D8A589500AD2B0B /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
