@@ -12,6 +12,10 @@ class ViewController: UIViewController {
     let webView = WKWebView(frame: view.bounds, configuration: configuration)
     webView.translatesAutoresizingMaskIntoConstraints = false
     webView.scrollView.isScrollEnabled = false
+
+    // allow inspecting from safari
+    webView.isInspectable = true
+      
     return webView
   }()
 
@@ -24,6 +28,12 @@ class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    // start an inert client to do daemon_rpc
+	  do {
+		  try startClient(configToJsonString(inertConfig(defaultConfig()))!)
+	  } catch {
+		  eprint("starting geph5-client dry run in main app failed with ERROR = ", error.localizedDescription)
+	  }
     setupWebView()
     loadInitialContent()
     setupUserDefaults()
@@ -60,7 +70,7 @@ class ViewController: UIViewController {
       preferredStyle: .alert)
 
     let confirmAction = UIAlertAction(title: "Ok", style: .default) { [weak self] _ in
-      inAppPurchase()
+      inAppPurchase(42)
     }
 
     alertController.addAction(confirmAction)

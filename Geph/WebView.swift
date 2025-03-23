@@ -90,15 +90,11 @@ extension ViewController: WKNavigationDelegate {
         }
         
         let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
-        print("COMPONENTS: ", components?.host ?? "")
+//        eprint("COMPONENTS: ", components?.host ?? "")
         
         if components?.scheme == "http" || components?.scheme == "https" {
-            if components?.host != "geph.io" {
                 // Open the link in the external browser
                 UIApplication.shared.open(url)
-            } else {
-                handleGephSubscriptionNavigation()
-            }
             // Cancel the navigation since we handled it
             decisionHandler(.cancel)
         } else {
@@ -111,10 +107,10 @@ extension ViewController: WKNavigationDelegate {
             if hasSubscription {
                 showSubscriptionExistsAlert()
             } else {
-                inAppPurchase()
+                inAppPurchase(42)
             }
         } else {
-            inAppPurchase()
+            inAppPurchase(42)
         }
     }
 }

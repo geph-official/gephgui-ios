@@ -28,18 +28,16 @@ func fetchHasSubscription() {
   }
 }
 
-func inAppPurchase() {
-  NSLog("inAppPurchase!")
+func inAppPurchase(_ geph_uid: Int) {
+  eprint("inAppPurchase starting!")
 
   guard let product = product else {
-    NSLog("no product...")
+    eprint("no product...")
     return
   }
   Task {
     do {
-      let uid = defaults.value(forKey: "uid") as! Int32
-      //            eprint("UID!!!!!!", uid);
-      let uuid = encodeInt32ToUUID(uid)
+      let uuid = encodeInt32ToUUID(Int32(geph_uid))
 
       let result = try await product.purchase(options: [
         .appAccountToken(uuid)
@@ -47,14 +45,11 @@ func inAppPurchase() {
       switch result {
       case .success(let verification):
         switch verification {
-        case .verified(let transaction):
-          // Transaction verified successfully
-          // pop up wait up to 10 min modal
+        case .verified(let transaction): // success
           eprint("TRANSACTION: ", transaction)
           await transaction.finish()
-        case .unverified(let transaction, let verificationError):
-          // Transaction verification failed
-          print("Transaction verification failed: \(verificationError)")
+        case .unverified(let transaction, let verificationError): // failed
+          eprint("Transaction verification failed: ", verificationError)
           await transaction.finish()
         }
       case .userCancelled, .pending:
@@ -63,7 +58,7 @@ func inAppPurchase() {
         break
       }
     } catch {
-      print("Failed to purchase: \(error)")
+        eprint("Failed to purchase: ", error)
     }
   }
 }
@@ -73,14 +68,13 @@ var product: Product?
 
 func fetchProduct() {
   Task {
-    eprint("GONNNA FETCH PRODUCT")
     do {
       let products = try await Product.products(for: [productIdentifier])
-      eprint("FETCHED PRODUCTS for: ", productIdentifier)
+//      eprint("FETCHED PRODUCTS for: ", productIdentifier)
       eprint(products)
       if let fetchedProduct = products.first {
         product = fetchedProduct
-        eprint("fetched product!", fetchedProduct)
+        eprint("Fetched product!", fetchedProduct)
       }
     } catch {
       eprint("Failed to fetch the product: ", error)
