@@ -13,8 +13,8 @@ class ViewController: UIViewController {
     webView.translatesAutoresizingMaskIntoConstraints = false
     webView.scrollView.isScrollEnabled = false
 
-    // allow inspecting from safari
-    webView.isInspectable = true
+//    // allow inspecting from safari
+//    webView.isInspectable = true
       
     return webView
   }()
