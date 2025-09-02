@@ -19,6 +19,7 @@ func defaultConfig() -> [String: Any] {
 					"fronted": [
 						"front": "https://vuejs.org/",
 						"host": "svitania-naidallszei-2.netlify.app",
+						"override_ip": ["75.2.60.5:443"]
 					]
 				],
 				// No aws lambda for iOS b/c aws Rust dependency is too hard to compile
@@ -28,6 +29,7 @@ func defaultConfig() -> [String: Any] {
 			"master": "88c1d2d4197bed815b01a22cadfc6c35aa246dddb553682037a118aebfaa3954",
 			"mizaru_free": "0558216cbab7a9c46f298f4c26e171add9af87d0694988b8a8fe52ee932aa754",
 			"mizaru_plus": "cf6f58868c6d9459b3a63bc2bd86165631b3e916bad7f62b578cd9614e0bcb3b",
+			"mizaru_bw": "3082010a0282010100d0ae53a794ea37bf2e100cb3a872177ec6c11e8375fdcbf92960ce0293465674eb1426a1841b7622a58979a5ff3f8aa2301a621545e9b90bb39d1a6bfda19d6ca1aae74a3192ddfd2b9558eb652c3c2c22f42bdde272852fb67d93cae5846213512c474bf799844aee019bf718f6fa64223be06364459fc8dec66796b1"
 		],
 		"vpn": false,
 		"vpn_fd": NSNull(),

@@ -25,7 +25,7 @@ extension ViewController: WKScriptMessageHandler {
 	) {
 		Task {
 			if let messageBody = message.body as? [String] {
-//				eprint("WebView CALLED \(message.name) WITH \(messageBody)")
+				//				eprint("WebView CALLED \(message.name) WITH \(messageBody)")
 				let verb = messageBody[0]
 				let args = messageBody[1]  // args is a json string
 				let callback = messageBody[2]
@@ -60,11 +60,11 @@ extension ViewController: WKScriptMessageHandler {
 							// sleep to give server notifications enough time
 							try? await Task.sleep(nanoseconds: 5 * 1_000_000_000)
 							try await injectSuccess(callback, "")
-						
+							
 						case "debug_logs":
 							let logs = fetchAllLogs()
 							let encoder = JSONEncoder()
-
+							
 							if let jsonData = try? encoder.encode(logs),
 							   let jsonString = String(data: jsonData, encoding: .utf8) {
 								try await injectSuccess(callback, jsonString)
@@ -93,7 +93,11 @@ func jsonify(_ message: String) -> String {
 // returns when VpnTunnel is fully connected
 func startTunnel(_ clientArgsJson: String) async throws {
 	eprint("starting the NetworkExtension")
-	let manager = try await getManager()
+	try await getManager()
+	guard let manager = netpManager else {
+		throw "no manager"
+	}
+	
 	assert(manager.isEnabled)
 	
 	// assemble config for geph5-client
@@ -119,8 +123,11 @@ func startTunnel(_ clientArgsJson: String) async throws {
 
 // returns when VpnTunnel is fully stopped
 func stopTunnel() async throws {
-	eprint("LOLLLLHIHIHIHI CHAMUEL")
-	let manager = try await getManager()
+	try await getManager()
+	guard let manager = netpManager else {
+		throw "no manager"
+	}
+	
 	// prevents undefined behavior caused by trying to stop a tunnel already in teardown
 	let status = manager.connection.status
 	eprint("TUNNEL STATUS = ", status.rawValue)
@@ -143,8 +150,9 @@ func stopTunnel() async throws {
 /// - Returns: Response string from the daemon
 /// - Throws: Error message if the RPC request fails
 func daemonRpcVPN(_ args: String) async throws -> String {
-	let manager = try await getManager()
-	
+	guard let manager = netpManager else {
+		throw "VPN tunnel is not connected"
+	}
 	guard let session = manager.connection as? NETunnelProviderSession,
 		  session.status == .connected else {
 		throw "VPN tunnel is not connected"
@@ -174,7 +182,9 @@ func daemonRpcVPN(_ args: String) async throws -> String {
 	}
 }
 
-func getManager() async throws -> NETunnelProviderManager {
+var netpManager: NETunnelProviderManager?
+
+func getManager() async throws {
 	let managers = try await NETunnelProviderManager.loadAllFromPreferences()
 	if managers.isEmpty {
 		let manager = NETunnelProviderManager()
@@ -188,25 +198,25 @@ func getManager() async throws -> NETunnelProviderManager {
 		manager.isEnabled = true
 		try await manager.saveToPreferences()
 		try await manager.loadFromPreferences()
-		return manager
+		netpManager = manager
 	} else {
 		let man = managers[0]
 		man.isEnabled = true
 		try await man.saveToPreferences()
-		return man
+		netpManager = man
 	}
 }
 
 func fetchAllLogs() -> String {
 	var logOutput = ""
-
+	
 	do {
 		// Access the log store for the current process
 		let logStore = try OSLogStore(scope: .currentProcessIdentifier)
-
+		
 		// Retrieve log entries from the beginning of log store
 		let entries = try logStore.getEntries()
-
+		
 		// Iterate through the entries and build the log string
 		for entry in entries {
 			if let logEntry = entry as? OSLogEntryLog {

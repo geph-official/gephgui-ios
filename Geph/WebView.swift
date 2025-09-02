@@ -9,6 +9,8 @@ extension ViewController: UIWebViewDelegate {
     func setupWebView() {
         // Configure webview
         webView.navigationDelegate = self
+		webView.uiDelegate = self
+		webView.configuration.preferences.javaScriptCanOpenWindowsAutomatically = true
         
         // Add message handlers
         webView.configuration.userContentController.add(
@@ -90,7 +92,7 @@ extension ViewController: WKNavigationDelegate {
         }
         
         let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
-//        eprint("COMPONENTS: ", components?.host ?? "")
+        eprint("COMPONENTS: ", components?.host ?? "")
         
         if components?.scheme == "http" || components?.scheme == "https" {
                 // Open the link in the external browser
@@ -102,15 +104,27 @@ extension ViewController: WKNavigationDelegate {
         }
     }
     
-    private func handleGephSubscriptionNavigation() {
-        if let hasSubscription = hasSubscription {
-            if hasSubscription {
-                showSubscriptionExistsAlert()
-            } else {
-                inAppPurchase(42)
-            }
-        } else {
-            inAppPurchase(42)
-        }
-    }
+//    private func handleGephSubscriptionNavigation() {
+//        if let hasSubscription = hasSubscription {
+//            if hasSubscription {
+//                showSubscriptionExistsAlert()
+//            } else {
+//                inAppPurchase(42)
+//            }
+//        } else {
+//            inAppPurchase(42)
+//        }
+//    }
+}
+
+extension ViewController: WKUIDelegate {
+	func webView(_ webView: WKWebView,
+				 createWebViewWith configuration: WKWebViewConfiguration,
+				 for navigationAction: WKNavigationAction,
+				 windowFeatures: WKWindowFeatures) -> WKWebView? {
+		if let url = navigationAction.request.url {
+			UIApplication.shared.open(url)
+		}
+		return nil
+	}
 }

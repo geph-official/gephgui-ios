@@ -8,7 +8,7 @@ class ViewController: UIViewController {
 
   lazy var webView: WKWebView = {
     let configuration = WKWebViewConfiguration()
-    configuration.setValue(true, forKey: "_allowUniversalAccessFromFileURLs")
+    configuration.setValue(true, forKey: "allowUniversalAccessFromFileURLs")
     let webView = WKWebView(frame: view.bounds, configuration: configuration)
     webView.translatesAutoresizingMaskIntoConstraints = false
     webView.scrollView.isScrollEnabled = false
