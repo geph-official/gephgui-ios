@@ -1,10 +1,16 @@
 import NetworkExtension
 import QuartzCore
 
+private func enableOldStyleNSLog() {
+    setenv("OS_ACTIVITY_MODE", "disable", 1)   // route NSLog to stderr
+    setenv("NSUnbufferedIO", "YES", 1)         // flush immediately
+}
+
 class PacketTunnelProvider: NEPacketTunnelProvider {
 	override func startTunnel(
 		options: [String: NSObject]?, completionHandler: @escaping (Error?) -> Void
 	) {
+        enableOldStyleNSLog()
 		NSLog("TUNNEL STARTED!")
 		
 		// start geph5-client
@@ -31,7 +37,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 				as? [String: String],
 			   let rpcRequest = json["daemon_rpc"]
 			{
-//				NSLog("Processing daemon_rpc request: %@", rpcRequest)
+				NSLog("Processing daemon_rpc request: %@", rpcRequest)
 				
 				// Call the daemon_rpc function
 				let response = try daemonRpc(rpcRequest)

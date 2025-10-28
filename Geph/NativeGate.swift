@@ -10,7 +10,7 @@ extension ViewController: WKScriptMessageHandler {
 	/// Injects success callback into JavaScript
 	func injectSuccess(_ callback: String, _ message: String) async throws {
 		let js = "\(callback)[0](\(message)); delete \(callback)"
-		eprint("INJECTING JS", js)
+//		eprint("INJECTING JS", js)
 		try await webView.evaluateJavaScript(js)
 	}
 	
