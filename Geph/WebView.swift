@@ -24,9 +24,57 @@ extension ViewController: UIWebViewDelegate {
             webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             webView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+        setupLoadingPlaceholder()
         
         // Inject scripts
         injectUserScripts()
+    }
+
+    private func setupLoadingPlaceholder() {
+        let placeholder = UIView()
+        placeholder.translatesAutoresizingMaskIntoConstraints = false
+        placeholder.backgroundColor = .systemBackground
+
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+
+        imageView.image = UIImage(named: "GephLogo")
+
+        placeholder.addSubview(imageView)
+        view.addSubview(placeholder)
+        loadingPlaceholderView = placeholder
+
+        NSLayoutConstraint.activate([
+            placeholder.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            placeholder.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            placeholder.topAnchor.constraint(equalTo: view.topAnchor),
+            placeholder.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            imageView.centerXAnchor.constraint(equalTo: placeholder.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: placeholder.centerYAnchor),
+            imageView.widthAnchor.constraint(lessThanOrEqualTo: placeholder.widthAnchor, multiplier: 0.22),
+            imageView.widthAnchor.constraint(lessThanOrEqualToConstant: 96),
+            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor)
+        ])
+    }
+
+    private func hideLoadingPlaceholder() {
+        guard let placeholder = loadingPlaceholderView else {
+            return
+        }
+
+        UIView.animate(
+            withDuration: 0.2,
+            delay: 0,
+            options: [.curveEaseOut, .beginFromCurrentState],
+            animations: {
+                placeholder.alpha = 0
+            },
+            completion: { [weak self] _ in
+                placeholder.removeFromSuperview()
+                self?.loadingPlaceholderView = nil
+            }
+        )
     }
     
     /// Injects required JavaScript into the WebView
@@ -81,6 +129,10 @@ extension ViewController: UIWebViewDelegate {
 
 // MARK: - WKNavigationDelegate Implementation
 extension ViewController: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        hideLoadingPlaceholder()
+    }
+
     func webView(
         _ webView: WKWebView, 
         decidePolicyFor navigationAction: WKNavigationAction,

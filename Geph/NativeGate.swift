@@ -4,10 +4,13 @@ import UIKit
 import WebKit
 import OSLog
 
+private let nativeGateLog = OSLog(subsystem: "geph.io.app", category: "NativeGate")
+
 extension ViewController: WKScriptMessageHandler {
 	// MARK: - JavaScript Interaction
 	
 	/// Injects success callback into JavaScript
+	@MainActor
 	func injectSuccess(_ callback: String, _ message: String) async throws {
 		let js = "\(callback)[0](\(message)); delete \(callback)"
 //		eprint("INJECTING JS", js)
@@ -15,6 +18,7 @@ extension ViewController: WKScriptMessageHandler {
 	}
 	
 	/// Injects rejection callback into JavaScript
+	@MainActor
 	func injectReject(_ callback: String, _ message: String) async throws {
 		let js = "\(callback)[1](\(message)); delete \(callback)"
 		try await webView.evaluateJavaScript(js)
@@ -23,9 +27,9 @@ extension ViewController: WKScriptMessageHandler {
 	func userContentController(
 		_ userContentController: WKUserContentController, didReceive message: WKScriptMessage
 	) {
-		Task {
+		Task { @MainActor in
 			if let messageBody = message.body as? [String] {
-				//				eprint("WebView CALLED \(message.name) WITH \(messageBody)")
+//                eprint("WebView CALLED \(message.name) WITH \(messageBody)")
 				let verb = messageBody[0]
 				let args = messageBody[1]  // args is a json string
 				let callback = messageBody[2]
@@ -45,20 +49,19 @@ extension ViewController: WKScriptMessageHandler {
 							do {
 								// first try RPC to the actual daemon
 								let resp = try await daemonRpcVPN(args)
-								eprint("background daemonRpc ", args, "; resp = ", resp)
+//								eprint("background daemonRpc ", args, "; resp = ", resp)
 								try await injectSuccess(callback, resp)
 							} catch {
 								// if that fails, call the dry-run daemon
 								let resp = try daemonRpc(args)
-								eprint("foreground daemonRpc ", args, "; resp = ", resp)
+//								eprint("foreground daemonRpc ", args, "; resp = ", resp)
 								try await injectSuccess(callback, resp)
 							}
 							
-						case "pay_invoice":
+						case "apple_pay":
+                            eprint("$$$$ pay_invoice called $$$$")
 							let user_id = Int(args)!
-							inAppPurchase(user_id)
-							// sleep to give server notifications enough time
-							try? await Task.sleep(nanoseconds: 5 * 1_000_000_000)
+                            try await inAppPurchase(user_id)
 							try await injectSuccess(callback, "")
 							
 						case "debug_logs":
@@ -69,25 +72,26 @@ extension ViewController: WKScriptMessageHandler {
 							   let jsonString = String(data: jsonData, encoding: .utf8) {
 								try await injectSuccess(callback, jsonString)
 							}
+						case "ios_version":
+							let version = UIDevice.current.systemVersion
+							try await injectSuccess(callback, jsonify(version))
+						case "ios_plus_price":
+							let price = try await fetchIosPlusPrice()
+							try await injectSuccess(callback, jsonify(price))
 						case _:
 							throw "invalid rpc input!"
 						}
 					}
 				} catch {
-					NSLog("NativeGate Error: %@", error.localizedDescription)
+					logPublic(
+						"NativeGate Error: \(error.localizedDescription)", type: .error, log: nativeGateLog)
 					try await injectReject(callback, jsonify(error.localizedDescription))
 				}
 			} else {
-				NSLog("cannot parse rpc argument!!")
+				logPublic("cannot parse rpc argument!!", type: .error, log: nativeGateLog)
 			}
 		}
 	}
-}
-
-// Helper function to jsonify error messages
-func jsonify(_ message: String) -> String {
-	let data = try! JSONSerialization.data(withJSONObject: message, options: [])
-	return String(data: data, encoding: .utf8)!
 }
 
 // returns when VpnTunnel is fully connected
@@ -95,16 +99,15 @@ func startTunnel(_ clientArgsJson: String) async throws {
 	eprint("starting the NetworkExtension")
 	try await getManager()
 	guard let manager = netpManager else {
-		throw "no manager"
+		throw "Missing VPN Manager"
 	}
-	
 	assert(manager.isEnabled)
 	
 	// assemble config for geph5-client
 	let jsonData = clientArgsJson.data(using: .utf8)!
 	let jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any]
 	let config = runningConfig(args: jsonObject!)
-	eprint("geph5ClientConfig: \n", config)
+//	eprint("geph5ClientConfig: \n", config)
 	let configStr = configToJsonString(config)!
 	
 	// start VpnTunnel
@@ -112,37 +115,39 @@ func startTunnel(_ clientArgsJson: String) async throws {
 	try manager.connection.startVPNTunnel(options: args_map)
 	
 	// wait for VpnTunnel to connect
-	while true {
-		if manager.connection.status == NEVPNStatus.connected {
-			return
-		} else {
-			try await Task.sleep(nanoseconds: 100_000_000)
-		}
-	}
+    let deadline = ContinuousClock.now + .seconds(60)
+
+    while ContinuousClock.now < deadline {
+        if manager.connection.status == .connected {
+            return
+        } else {
+            try await Task.sleep(for: .milliseconds(100))
+        }
+    }
+    throw "Timed out waiting for VPN tunnel to connect"
 }
 
 // returns when VpnTunnel is fully stopped
 func stopTunnel() async throws {
-	try await getManager()
-	guard let manager = netpManager else {
-		throw "no manager"
-	}
-	
-	// prevents undefined behavior caused by trying to stop a tunnel already in teardown
-	let status = manager.connection.status
-	eprint("TUNNEL STATUS = ", status.rawValue)
-	if status == .connected {
-		manager.connection.stopVPNTunnel()
-		
-		// wait for VpnTunnel to fully stop
-		while true {
-			if manager.connection.status == NEVPNStatus.disconnected {
-				return
-			} else {
-				try await Task.sleep(nanoseconds: 100_000_000)
-			}
-		}
-	}
+    try await getManager()
+    guard let manager = netpManager else {
+        throw "no manager"
+    }
+    
+    // prevents undefined behavior caused by trying to stop a tunnel already in teardown
+    if manager.connection.status == .connected {
+        manager.connection.stopVPNTunnel()
+        
+        let deadline = ContinuousClock.now + .seconds(60)
+        while ContinuousClock.now < deadline {
+            if manager.connection.status == .disconnected {
+                return
+            } else {
+                try await Task.sleep(for: .milliseconds(100))
+            }
+        }
+        throw "Timed out waiting for VPN tunnel to disconnect"
+    }
 }
 
 /// Sends an RPC request to the daemon via VPN extension and returns the response

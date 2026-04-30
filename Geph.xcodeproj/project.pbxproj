@@ -422,7 +422,6 @@
 /* Begin PBXShellScriptBuildPhase section */
 		9B51EE382D8A77B3008E9E09 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -436,7 +435,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# update & build gui\n./build_gephgui_html.sh \n\n# update & build geph5-client\n# \n./build_geph5_client.sh\n";
+			shellScript = "# update geph5 & gephgui submodules\n# git update submodules --remote --recursive\n\nset -e\n\n  export PATH=\"/opt/homebrew/bin:$HOME/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin\"\n\n  cd \"$SRCROOT/gephgui\"\n  npm run build\n  rm -rf \"$SRCROOT/Geph/dist\"\n  mv ./dist \"$SRCROOT/Geph/\"\n\n  cd \"$SRCROOT/geph5\"\n  cargo build --release -p geph5-client --target aarch64-apple-ios --features aws_lambda\n  rm -rf \"$SRCROOT/Geph/libGeph5Client/libgeph5_client.a\"\n  mv ./target/aarch64-apple-ios/release/libgeph5_client.a \"$SRCROOT/Geph/libGeph5Client/\"\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -652,7 +651,7 @@
 				CODE_SIGN_ENTITLEMENTS = geph/geph.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
 				ENABLE_BITCODE = NO;
@@ -668,16 +667,15 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				KEEP_PRIVATE_EXTERNS = NO;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Geph/libGeph5Client";
-				MARKETING_VERSION = 1.0.9;
+				MARKETING_VERSION = 5.4.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -701,7 +699,7 @@
 				CODE_SIGN_ENTITLEMENTS = geph/geph.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 5M9G3KQ5FK;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -715,16 +713,15 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				KEEP_PRIVATE_EXTERNS = NO;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Geph/libGeph5Client";
-				MARKETING_VERSION = 1.0.9;
+				MARKETING_VERSION = 5.4.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -837,7 +834,7 @@
 				INFOPLIST_FILE = daemon/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = daemon;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -847,7 +844,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Geph/libGeph5Client",
 				);
-				MARKETING_VERSION = 0.7;
+				MARKETING_VERSION = 5.4.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io.daemon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -873,7 +870,7 @@
 				INFOPLIST_FILE = daemon/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = daemon;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -883,7 +880,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Geph/libGeph5Client",
 				);
-				MARKETING_VERSION = 0.7;
+				MARKETING_VERSION = 5.4.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io.daemon;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -9,9 +9,9 @@ async function callRpc(verb, args_json) {
 	//     await new Promise((r) => setTimeout(r, 200));
 	// }
 	// callingRpc = true
+	const callback = getRandomName();
 	try {
 		const prom = new Promise((resolve, reject) => {
-			const callback = getRandomName();
 			window[callback] = [resolve, reject];
 			window.webkit.messageHandlers.callRpc.postMessage([verb, args_json, callback]);
 		});
@@ -20,11 +20,12 @@ async function callRpc(verb, args_json) {
 		console.log("Swift gave us", res);
 		return res;
 	} catch (e) {
-		console.log("CallRpc ERROR!", e)
+		console.log("CallRpc ERROR!", e);
+        throw e;
 	}
-	// finally {
-	//     callingRpc = false
-	// }
+    finally {
+        delete window[callback];
+    }
 }
 
 window["NATIVE_GATE"] = {
@@ -33,7 +34,8 @@ window["NATIVE_GATE"] = {
 	},
 	
 	async restart_daemon(daemon_args) {
-		await callRpc("restart_daemon", daemon_args);
+        await callRpc("stop_daemon", "");
+		await callRpc("start_daemon", JSON.stringify(daemon_args));
 	},
 	
 	async stop_daemon() {
@@ -56,33 +58,24 @@ window["NATIVE_GATE"] = {
 		}
 		return resp.result;
 	},
-	
-	async price_points() {
-		let resp = [[30, 5]];
-		console.log(`PRICE_POINTS = ${resp}`)
-		return resp;
-	},
-	
-	async create_invoice(secret, days) {
-		return {
-		id: JSON.stringify([secret, days]),
-		methods: ["apple-pay"],
-		};
-	},
-	
-	async pay_invoice(id, method) {
+
+	async start_native_payment(secret) {
 		try {
-			console.log(`Going to pay invoice ${id} with method ${method}`);
-			// Parse the id to extract secret and days
-			const [secret, days] = JSON.parse(id);
-			
 			// Call daemon_rpc to get the user_id
-			const account_status = await this.daemon_rpc("user_info", [secret]);
+			const account_status = await this.daemon_rpc("broker_rpc", ["get_user_info_by_cred", [{"secret": secret}]]);
 			const user_id = account_status.user_id.toString();
-			console.log(`pay_invoice for user_id = ${user_id}`);
+			console.log(`start_native_payment for user_id = ${user_id}`);
 			
-			// Call Swift
-			const resp = await callRpc("pay_invoice", user_id)
+			// Call Swift. only Unlimited Plus exists on iOS
+			const resp = await callRpc("apple_pay", user_id)
+		} catch (e) {
+			throw String(e);
+		}
+	},
+
+	async get_ios_plus_price() {
+		try {
+			return await callRpc("ios_plus_price", "");
 		} catch (e) {
 			throw String(e);
 		}
@@ -132,22 +125,37 @@ supports_vpn_conf: false,
 supports_autoupdate: false,
 	
 	async get_native_info() {
-		return {
-		platform_type: "ios",
-		platform_details: "iOS",
-		version: getiOSVersion(),
+		const ios_version = await getiOSVersion();
+		const info = {
+			platform_type: "ios",
+			platform_details: ios_version,
+			version: "5.4.0",
 		};
+		console.log("get_native_info", info);
+		return info;
 	},
 };
 
-function getiOSVersion() {
+async function getiOSVersion() {
+	try {
+		const version = await callRpc("ios_version", "");
+		if (version) {
+			console.log("getiOSVersion native", version);
+			return version;
+		}
+	} catch (e) {
+		console.log("getiOSVersion native error", e);
+	}
 	var ua = navigator.userAgent;
+	console.log("UA =", ua);
 	var match = ua.match(/OS (\d+)_(\d+)_?(\d+)?/);
 	if (match) {
 		var major = parseInt(match[1], 10);
 		var minor = parseInt(match[2], 10);
 		var patch = parseInt(match[3] || '0', 10);
+		console.log("getiOSVersion", { major: major, minor: minor, patch: patch });
 		return [major, minor, patch].join('.');
 	}
+	console.log("getiOSVersion no match", ua);
 	return undefined;
 }

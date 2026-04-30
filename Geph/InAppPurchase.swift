@@ -28,53 +28,67 @@ func fetchHasSubscription() {
 	}
 }
 
-func inAppPurchase(_ geph_uid: Int) {
-	guard let product = product else {
-		eprint("no product...")
-		return
-	}
-	Task {
-		do {
-			let uuid = encodeInt32ToUUID(Int32(geph_uid))
-			
-			let result = try await product.purchase(options: [
-				.appAccountToken(uuid)
-			])
-			switch result {
-			case .success(let verification):
-				switch verification {
-				case .verified(let transaction): // success
-					eprint("TRANSACTION: ", transaction)
-					await transaction.finish()
-					
-				case .unverified(let transaction, let verificationError): // failed
-					eprint("Transaction verification failed: ", verificationError)
-					await transaction.finish()
-				}
-			case .userCancelled, .pending:
-				break
-			@unknown default:
-				break
-			}
-		} catch {
-			eprint("Failed to purchase: ", error)
-		}
-	}
+func inAppPurchase(_ geph_uid: Int) async throws {
+    guard let product = product else {
+        throw "Missing Product"
+    }
+    do {
+        let uuid = encodeInt32ToUUID(Int32(geph_uid))
+//      eprint("UUID = ", uuid)
+        let result = try await product.purchase(options: [
+            .appAccountToken(uuid)
+        ])
+        switch result {
+        case .success(let verification):
+            switch verification {
+            case .verified(let transaction):
+                await transaction.finish()
+                
+            case .unverified(let transaction, let verificationError): // failed
+                eprint("Transaction verification failed: ", verificationError)
+                throw verificationError
+            }
+        case .userCancelled, .pending:
+            break
+        @unknown default:
+            break
+        }
+    } catch {
+        eprint("Failed to purchase: ", error);
+        throw error
+    }
 }
 
 let productIdentifier = "1_mo_renewing"
 var product: Product?
 
+struct IosPlusPrice: Encodable {
+	let localized_price: String
+	let period: String
+}
+
+func getProduct() async throws -> Product {
+	if let product = product {
+		return product
+	}
+	let products = try await Product.products(for: [productIdentifier])
+	guard let fetchedProduct = products.first else {
+		throw "Missing Product"
+	}
+	product = fetchedProduct
+	return fetchedProduct
+}
+
+func fetchIosPlusPrice() async throws -> IosPlusPrice {
+	let product = try await getProduct()
+	return IosPlusPrice(localized_price: product.displayPrice, period: "month")
+}
+
 func fetchProduct() {
 	Task {
 		do {
-			let products = try await Product.products(for: [productIdentifier])
-			//      eprint("FETCHED PRODUCTS for: ", productIdentifier)
-			eprint(products)
-			if let fetchedProduct = products.first {
-				product = fetchedProduct
-				eprint("Fetched product!", fetchedProduct)
-			}
+			let fetchedProduct = try await getProduct()
+			eprint("Fetched product!", fetchedProduct)
 		} catch {
 			eprint("Failed to fetch the product: ", error)
 		}

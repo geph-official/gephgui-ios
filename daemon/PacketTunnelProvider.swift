@@ -1,26 +1,32 @@
+import Foundation
 import NetworkExtension
+import OSLog
 import QuartzCore
 
-private func enableOldStyleNSLog() {
-    setenv("OS_ACTIVITY_MODE", "disable", 1)   // route NSLog to stderr
-    setenv("NSUnbufferedIO", "YES", 1)         // flush immediately
+private let daemonLog = OSLog(subsystem: "geph.io.daemon", category: "PacketTunnel")
+
+private func logPublic(_ message: String, type: OSLogType = .default) {
+    os_log("%{public}@", log: daemonLog, type: type, message)
 }
 
 class PacketTunnelProvider: NEPacketTunnelProvider {
 	override func startTunnel(
 		options: [String: NSObject]?, completionHandler: @escaping (Error?) -> Void
 	) {
-        enableOldStyleNSLog()
-		NSLog("TUNNEL STARTED!")
+
+        logPublic("TUNNEL STARTED!")
+        logPublic("TUNNEL STARTED!")
 		
 		// start geph5-client
-		let config = geph5ClientConfig(start_tunnel_opts: options)
-		do {
-			try startClient(config)
-			NSLog("geph5-client started")
-		} catch {
-			NSLog("startClient error: %@", error.localizedDescription)
-		}
+			let config = geph5ClientConfig(start_tunnel_opts: options)
+			do {
+				try startClient(config)
+				logPublic("geph5-client started")
+            } catch {
+                logPublic("startClient error: \(error.localizedDescription)", type: .error)
+                completionHandler(error)
+                return
+            }
 		
 		// start packetTunnel
 		setPacketTunnelSettings()
@@ -29,7 +35,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 	}
 	
 	override func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
-		//		NSLog("Received message from app")
+		//		logPublic("Received message from app")
 		
 		do {
 			// Parse the incoming message
@@ -37,7 +43,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 				as? [String: String],
 			   let rpcRequest = json["daemon_rpc"]
 			{
-				NSLog("Processing daemon_rpc request: %@", rpcRequest)
+//					logPublic("Processing daemon_rpc request: \(rpcRequest)")
 				
 				// Call the daemon_rpc function
 				let response = try daemonRpc(rpcRequest)
@@ -51,11 +57,11 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 					}
 				}
 			} else {
-				NSLog("Invalid message format received")
+					logPublic("Invalid message format received", type: .error)
 				completionHandler?(nil)
 			}
 		} catch {
-			NSLog("Error handling app message: %@", error.localizedDescription)
+				logPublic("Error handling app message: \(error.localizedDescription)", type: .error)
 			completionHandler?(nil)
 		}
 	}
@@ -84,12 +90,12 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 							try autoreleasepool {
 								for p in pkts {
 									try sendPacket(p)
-//									NSLog("sent up packet")
+//									logPublic("sent up packet")
 								}
 							}
 							
 						} catch {
-							NSLog("Error in UP loop: %@", error.localizedDescription)
+							logPublic("Error in UP loop: \(error.localizedDescription)", type: .error)
 							try? await Task.sleep(nanoseconds: 1_000_000_000)  // 1 second
 						}
 					}
@@ -103,10 +109,10 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 							try  autoreleasepool {
 								let pkt = try receivePacket()
 								self.packetFlow.writePackets([pkt], withProtocols: prot)
-//								NSLog("sent down packet")
+//								logPublic("sent down packet")
 							}
 						} catch {
-							NSLog("Error in DOWN loop: %@", error.localizedDescription)
+							logPublic("Error in DOWN loop: \(error.localizedDescription)", type: .error)
 							try? await Task.sleep(nanoseconds: 1_000_000_000)  // 1 second
 						}
 					}
@@ -123,7 +129,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 		do {
 			let _ = try daemonRpc(req)
 		} catch {
-			NSLog("daemon_rpc(stop) failed with error = %@", error.localizedDescription)
+			logPublic("daemon_rpc(stop) failed with error = \(error.localizedDescription)", type: .error)
 		}
 	}
 	
@@ -143,7 +149,7 @@ private func geph5ClientConfig(start_tunnel_opts: [String: NSObject]?) -> String
 	let defaults = UserDefaults.standard
 	
 	if let options_unwrapped = start_tunnel_opts {
-		NSLog("Geph started from GUI")
+		logPublic("Geph started from GUI")
 		let config = options_unwrapped["config"]!.description
 		
 		// save config to userDefaults
@@ -151,7 +157,7 @@ private func geph5ClientConfig(start_tunnel_opts: [String: NSObject]?) -> String
 		
 		return config
 	} else {
-		NSLog("Geph started from Settings")
+		logPublic("Geph started from Settings")
 		let config = defaults.string(forKey: "args")!
 		return config
 	}
@@ -161,7 +167,7 @@ private func geph5ClientConfig(start_tunnel_opts: [String: NSObject]?) -> String
 private func still_alive(_ interval: Int) {
 	Thread.detachNewThread({
 		while true {
-			NSLog("still alive!")
+			logPublic("still alive!")
 			Thread.sleep(forTimeInterval: TimeInterval(interval))
 		}
 	})

@@ -1,4 +1,7 @@
 import Foundation
+import OSLog
+
+private let clientLog = OSLog(subsystem: "geph.io.app", category: "Geph5Client")
 
 /// Starts the Geph5 client with the provided configuration
 /// - Parameter config: JSON string containing client configuration
@@ -7,7 +10,7 @@ public func startClient(_ config: String) throws {
 	let result = config.withCString { (configCString: UnsafePointer<CChar>) -> Int in
 		return Int(start_client(configCString))
 	}
-	NSLog("startClient result = %d", result)
+	logPublic("startClient result = \(result)", log: clientLog)
 	if result != 0 {
 		throw "Failed to start client with error code: \(result)"
 	}
@@ -29,7 +32,9 @@ public func daemonRpc(_ request: String) throws -> String {
 			
 			// Check for errors
 			if result < 0 {
-				throw "Daemon RPC request failed with code: \(result)"
+                let err_msg = "Daemon RPC request failed with code: \(result)"
+                eprint(err_msg)
+				throw err_msg
 			}
 			
 			// Convert the C string back to a Swift string
@@ -52,7 +57,7 @@ public func sendPacket(_ packet: Data) throws {
 	
 	if result != 0 {
 		throw "Failed to send packet with error code: \(result)"
-	}
+    }
 }
 
 /// Receives a VPN packet

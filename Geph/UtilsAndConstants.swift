@@ -1,5 +1,6 @@
 import Foundation
 import NetworkExtension
+import OSLog
 
 let CREDENTIAL_CACHE_PATH = path_to("geph-credentials")
 let DEBUGPACK_PATH = path_to("geph-debugpack.db")
@@ -8,6 +9,12 @@ let DAEMON_RPC_SECRET_PATH_KEY = "daemonRpcSecretPath"
 var DAEMON_KEY: Int32 = 0
 
 let defaults = UserDefaults.standard
+
+let defaultAppLog = OSLog(subsystem: "geph.io.app", category: "General")
+
+func logPublic(_ message: String, type: OSLogType = .default, log: OSLog = defaultAppLog) {
+  os_log("%{public}@", log: log, type: type, message)
+}
 
 func path_to(_ filename: String) -> String {
   let fmanager = FileManager.default
@@ -18,9 +25,6 @@ func path_to(_ filename: String) -> String {
 // this is so that we can `throw String`
 extension String: LocalizedError {
   public var errorDescription: String? { return self }
-}
-
-extension Int32: Error {
 }
 
 struct StderrOutputStream: TextOutputStream {
