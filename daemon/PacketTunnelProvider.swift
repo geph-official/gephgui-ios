@@ -15,7 +15,6 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 	) {
 
         logPublic("TUNNEL STARTED!")
-        logPublic("TUNNEL STARTED!")
 		
 		// start geph5-client
 			let config = geph5ClientConfig(start_tunnel_opts: options)
@@ -28,10 +27,16 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                 return
             }
 		
-		// start packetTunnel
-		setPacketTunnelSettings()
-		vpnShuffle()
-		completionHandler(nil)
+		// start packetTunnel after NetworkExtension has applied routes/DNS.
+		setPacketTunnelSettings { error in
+			if let error {
+				logPublic("setTunnelNetworkSettings error: \(error.localizedDescription)", type: .error)
+				completionHandler(error)
+				return
+			}
+			self.vpnShuffle()
+			completionHandler(nil)
+		}
 	}
 	
 	override func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
@@ -66,7 +71,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 		}
 	}
 	
-	private func setPacketTunnelSettings() {
+	private func setPacketTunnelSettings(completionHandler: @escaping (Error?) -> Void) {
 		let settings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: "1")
 		let addresses: [String] = ["123.123.123.123"]
 		let subnetMasks: [String] = ["255.255.255.255"]
@@ -75,7 +80,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 		settings.dnsSettings = .init(servers: ["1.1.1.1"])
 		settings.mtu = 1450
 		
-		setTunnelNetworkSettings(settings)
+		setTunnelNetworkSettings(settings, completionHandler: completionHandler)
 	}
 	
 	private func vpnShuffle() {
