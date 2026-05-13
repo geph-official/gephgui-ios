@@ -49,16 +49,14 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 			   let rpcRequest = json["daemon_rpc"]
 			{
 //					logPublic("Processing daemon_rpc request: \(rpcRequest)")
-				
-				// Call the daemon_rpc function
-				let response = try daemonRpc(rpcRequest)
-				
-				// Return the response
-				if let handler = completionHandler {
-					if let responseData = response.data(using: .utf8) {
-						handler(responseData)
-					} else {
-						handler(nil)
+
+				Task.detached(priority: .userInitiated) {
+					do {
+						let response = try daemonRpc(rpcRequest)
+						completionHandler?(response.data(using: .utf8))
+					} catch {
+						logPublic("Error handling app message: \(error.localizedDescription)", type: .error)
+						completionHandler?(nil)
 					}
 				}
 			} else {

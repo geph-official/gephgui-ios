@@ -53,7 +53,7 @@ extension ViewController: WKScriptMessageHandler {
 								try await injectSuccess(callback, resp)
 							} catch {
 								// if that fails, call the dry-run daemon
-								let resp = try daemonRpc(args)
+								let resp = try await foregroundDaemonRpc(args)
 //								eprint("foreground daemonRpc ", args, "; resp = ", resp)
 								try await injectSuccess(callback, resp)
 							}
@@ -94,13 +94,17 @@ extension ViewController: WKScriptMessageHandler {
 	}
 }
 
+func foregroundDaemonRpc(_ args: String) async throws -> String {
+	try await Task.detached(priority: .userInitiated) {
+		try startClient(configToJsonString(inertConfig(defaultConfig()))!)
+		return try daemonRpc(args)
+	}.value
+}
+
 // returns when VpnTunnel is fully connected
 func startTunnel(_ clientArgsJson: String) async throws {
 	eprint("starting the NetworkExtension")
-	try await getManager()
-	guard let manager = netpManager else {
-		throw "Missing VPN Manager"
-	}
+	let manager = try await getManager()
 	assert(manager.isEnabled)
 	
 	// assemble config for geph5-client
@@ -129,10 +133,7 @@ func startTunnel(_ clientArgsJson: String) async throws {
 
 // returns when VpnTunnel is fully stopped
 func stopTunnel() async throws {
-    try await getManager()
-    guard let manager = netpManager else {
-        throw "no manager"
-    }
+    let manager = try await getManager()
     
     // prevents undefined behavior caused by trying to stop a tunnel already in teardown
     if manager.connection.status == .connected {
@@ -155,9 +156,7 @@ func stopTunnel() async throws {
 /// - Returns: Response string from the daemon
 /// - Throws: Error message if the RPC request fails
 func daemonRpcVPN(_ args: String) async throws -> String {
-	guard let manager = netpManager else {
-		throw "VPN tunnel is not connected"
-	}
+	let manager = try await getManager()
 	guard let session = manager.connection as? NETunnelProviderSession,
 		  session.status == .connected else {
 		throw "VPN tunnel is not connected"
@@ -187,9 +186,7 @@ func daemonRpcVPN(_ args: String) async throws -> String {
 	}
 }
 
-var netpManager: NETunnelProviderManager?
-
-func getManager() async throws {
+func getManager() async throws -> NETunnelProviderManager {
 	let managers = try await NETunnelProviderManager.loadAllFromPreferences()
 	if managers.isEmpty {
 		let manager = NETunnelProviderManager()
@@ -203,12 +200,14 @@ func getManager() async throws {
 		manager.isEnabled = true
 		try await manager.saveToPreferences()
 		try await manager.loadFromPreferences()
-		netpManager = manager
+		return manager
 	} else {
 		let man = managers[0]
-		man.isEnabled = true
-		try await man.saveToPreferences()
-		netpManager = man
+		if !man.isEnabled {
+			man.isEnabled = true
+			try await man.saveToPreferences()
+		}
+		return man
 	}
 }
 

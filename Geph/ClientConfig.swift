@@ -7,7 +7,7 @@ func defaultConfig() -> [String: Any] {
     
     return [
         "exit_constraint": "auto",
-        "bridge_mode": "Auto",
+        "allow_direct": false,
         "cache": cacheDir.appendingPathComponent("cache.db").path,
         "broker": [
             "priority_race": [
@@ -73,6 +73,10 @@ func runningConfig(args: [String: Any], cacheDir: String? = nil) -> [String: Any
 	
 	// Set other fields
 	cfg["dry_run"] = false
+
+	if let allowDirect = args["allow_direct"] as? Bool {
+		cfg["allow_direct"] = allowDirect
+	}
 	
 	if let prcWhitelist = args["prc_whitelist"] as? Bool {
 		cfg["passthrough_china"] = prcWhitelist

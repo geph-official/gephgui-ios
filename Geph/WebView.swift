@@ -34,6 +34,7 @@ extension ViewController: UIWebViewDelegate {
         let placeholder = UIView()
         placeholder.translatesAutoresizingMaskIntoConstraints = false
         placeholder.backgroundColor = .systemBackground
+        placeholder.isUserInteractionEnabled = false
 
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false

@@ -41,7 +41,6 @@ class ViewController: UIViewController {
 	  }
 
     loadInitialContent()
-    fetchSubscriptionData()
   }
 
   deinit {
@@ -59,11 +58,6 @@ class ViewController: UIViewController {
       let randomString = generateRandomString(length: 20)
       sharedDefaults?.set(randomString, forKey: DAEMON_RPC_SECRET_PATH_KEY)
     }
-  }
-
-  private func fetchSubscriptionData() {
-    fetchProduct()
-    fetchHasSubscription()
   }
 
 //  func showSubscriptionExistsAlert() {
