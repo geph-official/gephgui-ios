@@ -29,9 +29,7 @@ func fetchHasSubscription() {
 }
 
 func inAppPurchase(_ geph_uid: Int) async throws {
-    guard let product = product else {
-        throw "Missing Product"
-    }
+    let product = try await getProduct()
     do {
         let uuid = encodeInt32ToUUID(Int32(geph_uid))
 //      eprint("UUID = ", uuid)
@@ -71,12 +69,37 @@ func getProduct() async throws -> Product {
 	if let product = product {
 		return product
 	}
-	let products = try await Product.products(for: [productIdentifier])
-	guard let fetchedProduct = products.first else {
-		throw "Missing Product"
+	for attempt in 1...3 {
+		let products = try await Product.products(for: [productIdentifier])
+		if let fetchedProduct = products.first(where: { $0.id == productIdentifier }) {
+			product = fetchedProduct
+			return fetchedProduct
+		}
+		if attempt < 3 {
+			try await Task.sleep(for: .milliseconds(500 * attempt))
+		}
 	}
-	product = fetchedProduct
-	return fetchedProduct
+	throw await missingProductError()
+}
+
+// "Missing Product" means the App Store answered but offered no products, which is a
+// per-user condition (wrong storefront, sideloaded/re-signed app, no receipt). Embed the
+// context in the error text so a user's screenshot alone identifies the cause.
+func missingProductError() async -> String {
+	let storefront = await Storefront.current?.countryCode ?? "no storefront"
+	let receipt: String
+	if let receiptURL = Bundle.main.appStoreReceiptURL {
+		if FileManager.default.fileExists(atPath: receiptURL.path) {
+			receipt = receiptURL.lastPathComponent
+		} else {
+			receipt = "no receipt file"
+		}
+	} else {
+		receipt = "no receipt URL"
+	}
+	let bundleId = Bundle.main.bundleIdentifier ?? "no bundle id"
+	return
+		"Missing Product [\(storefront) / \(receipt) / \(bundleId) / canPay: \(AppStore.canMakePayments)]"
 }
 
 func fetchIosPlusPrice() async throws -> IosPlusPrice {

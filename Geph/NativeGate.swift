@@ -63,7 +63,21 @@ extension ViewController: WKScriptMessageHandler {
 							let user_id = Int(args)!
                             try await inAppPurchase(user_id)
 							try await injectSuccess(callback, "")
-							
+
+						case "open_browser":
+							// `args` is the raw URL string (or a JSON string literal from callers
+							// that pass an array element). Open it in the external browser.
+							if let url = URL(string: args) {
+								_ = await UIApplication.shared.open(url)
+							}
+							try await injectSuccess(callback, "")
+
+						case "set_exit_constraint":
+							// iOS has no in-engine exit switch, so honor a live exit change by
+							// restarting the tunnel with the new exit merged into the last args.
+							try await setExitConstraint(args)
+							try await injectSuccess(callback, "")
+
 						case "debug_logs":
 							let logs = fetchAllLogs()
 							let encoder = JSONEncoder()
@@ -101,9 +115,52 @@ func foregroundDaemonRpc(_ args: String) async throws -> String {
 	}.value
 }
 
+// Shared storage of the last daemon args (the DaemonArgs JSON the GUI passed to
+// start_daemon), so a live exit switch can rebuild the running config. Stored in
+// the app-group defaults so it survives an app relaunch while the tunnel is up.
+private let lastDaemonArgsKey = "lastDaemonArgs"
+
+private func saveLastDaemonArgs(_ clientArgsJson: String) {
+	UserDefaults(suiteName: "group.geph.io")?.set(clientArgsJson, forKey: lastDaemonArgsKey)
+}
+
+private func loadLastDaemonArgs() -> String? {
+	UserDefaults(suiteName: "group.geph.io")?.string(forKey: lastDaemonArgsKey)
+}
+
+// Switch the exit while connected by restarting the tunnel. `exitJson` is the
+// ExitConstraint as sent by the GUI: the string "auto" or {"country","city"}.
+func setExitConstraint(_ exitJson: String) async throws {
+	guard let lastArgs = loadLastDaemonArgs(),
+		  let argsData = lastArgs.data(using: .utf8),
+		  var argsObject = try JSONSerialization.jsonObject(with: argsData) as? [String: Any]
+	else {
+		// Nothing running/remembered; the next start_daemon will carry the new
+		// exit from the GUI's prefs, so there's nothing to do here.
+		return
+	}
+
+	// Merge the new exit into the remembered args.
+	let exitData = exitJson.data(using: .utf8)!
+	argsObject["exit"] = try JSONSerialization.jsonObject(with: exitData, options: [.fragmentsAllowed])
+
+	let updatedJson = String(
+		data: try JSONSerialization.data(withJSONObject: argsObject), encoding: .utf8)!
+
+	// Only restart if the tunnel is actually up; otherwise just remember it.
+	let manager = try await getManager()
+	if manager.connection.status == .connected {
+		try await stopTunnel()
+		try await startTunnel(updatedJson)
+	} else {
+		saveLastDaemonArgs(updatedJson)
+	}
+}
+
 // returns when VpnTunnel is fully connected
 func startTunnel(_ clientArgsJson: String) async throws {
 	eprint("starting the NetworkExtension")
+	saveLastDaemonArgs(clientArgsJson)
 	let manager = try await getManager()
 	assert(manager.isEnabled)
 	

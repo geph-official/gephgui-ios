@@ -37,7 +37,13 @@ window["NATIVE_GATE"] = {
         await callRpc("stop_daemon", "");
 		await callRpc("start_daemon", JSON.stringify(daemon_args));
 	},
-	
+
+	// Switch the exit while (possibly) connected. iOS has no in-engine exit
+	// switch, so Swift restarts the NetworkExtension tunnel with the new exit.
+	async set_exit_constraint(exit) {
+		await callRpc("set_exit_constraint", JSON.stringify(exit));
+	},
+
 	async stop_daemon() {
 		await callRpc("stop_daemon", "")
 	},
@@ -90,6 +96,18 @@ window["NATIVE_GATE"] = {
 		// no split tunneling on iOS
 		return [];
 	},
+
+	async open_browser(url) {
+		// PaymentPopup passes a bare string; window.open-style callers may pass [url].
+		const target = Array.isArray(url) ? url[0] : url;
+		await callRpc("open_browser", String(target));
+	},
+
+	async get_lan_addresses() {
+		// iOS cannot listen on all interfaces (supports_listen_all is false),
+		// so there are no LAN addresses to display.
+		return [];
+	},
 	
 	async export_debug_pack(email) {
 		const debug_pack = await this.get_debug_pack();
@@ -118,6 +136,7 @@ window["NATIVE_GATE"] = {
 	
 	// Properties required by the interface
 supports_listen_all: false,
+supports_proxy_mode: false,
 supports_app_whitelist: false,
 supports_prc_whitelist: false,
 supports_proxy_conf: false,
@@ -129,7 +148,7 @@ supports_autoupdate: false,
 		const info = {
 			platform_type: "ios",
 			platform_details: ios_version,
-			version: "5.7.0",
+			version: "5.8.0",
 		};
 		console.log("get_native_info", info);
 		return info;

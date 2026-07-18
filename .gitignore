@@ -1,5 +1,24 @@
-# Compiled geph4-client library #
-
+# Compiled geph4-client library
 *.a
 
-.derivedData
+# macOS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+.sync-conflict-*.DS_Store
+
+# Xcode user state and build output
+DerivedData/
+.derivedData/
+build/
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.moved-aside
+
+# Swift/CocoaPods local dependency state
+.swiftpm/
+Pods/
+
+# Local Codex workspace mount
+.codex

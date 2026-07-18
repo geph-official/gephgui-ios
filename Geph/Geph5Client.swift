@@ -8,7 +8,9 @@ private let clientLog = OSLog(subsystem: "geph.io.app", category: "Geph5Client")
 /// - Throws: Error message if the client fails to start
 public func startClient(_ config: String) throws {
 	let result = config.withCString { (configCString: UnsafePointer<CChar>) -> Int in
-		return Int(start_client(configCString))
+		// iOS drives packets through send_pkt/recv_pkt, not a tun fd, so pass -1
+		// (no platform-VPN file descriptor) as the vpn_fd argument.
+		return Int(start_client(configCString, -1))
 	}
 	logPublic("startClient result = \(result)", log: clientLog)
 	if result != 0 {
