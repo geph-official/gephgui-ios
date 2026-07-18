@@ -33,7 +33,7 @@ extension ViewController: WKScriptMessageHandler {
 				let verb = messageBody[0]
 				let args = messageBody[1]  // args is a json string
 				let callback = messageBody[2]
-				
+
 				do {
 					if message.name == "callRpc" {
 						switch verb {
@@ -57,7 +57,7 @@ extension ViewController: WKScriptMessageHandler {
 //								eprint("foreground daemonRpc ", args, "; resp = ", resp)
 								try await injectSuccess(callback, resp)
 							}
-							
+
 						case "apple_pay":
                             eprint("$$$$ pay_invoice called $$$$")
 							let user_id = Int(args)!
@@ -208,6 +208,23 @@ func stopTunnel() async throws {
     }
 }
 
+/// Runs an async operation with a deadline. If the deadline passes first, throws;
+/// the losing operation is left to finish in the background (its result is discarded).
+func withDeadline<T: Sendable>(seconds: Double, _ op: @escaping @Sendable () async throws -> T)
+	async throws -> T
+{
+	try await withThrowingTaskGroup(of: T.self) { group in
+		group.addTask { try await op() }
+		group.addTask {
+			try await Task.sleep(for: .seconds(seconds))
+			throw "timed out after \(seconds)s"
+		}
+		let result = try await group.next()!
+		group.cancelAll()
+		return result
+	}
+}
+
 /// Sends an RPC request to the daemon via VPN extension and returns the response
 /// - Parameter args: JSON-RPC request string
 /// - Returns: Response string from the daemon
@@ -218,27 +235,32 @@ func daemonRpcVPN(_ args: String) async throws -> String {
 		  session.status == .connected else {
 		throw "VPN tunnel is not connected"
 	}
-	
+
 	// Create message data with the command and arguments
 	let messageData = try JSONSerialization.data(withJSONObject: ["daemon_rpc": args], options: [])
-	
-	// Create a continuation to wait for the response
-	return try await withCheckedThrowingContinuation { continuation in
-		do {
-			// Send the message to the provider and handle the response in the callback
-			try session.sendProviderMessage(messageData) { responseData in
-				if let responseData = responseData {
-					if let responseString = String(data: responseData, encoding: .utf8) {
-						continuation.resume(returning: responseString)
+
+	// A session can report .connected while the extension is dead or wedged (e.g.
+	// after an unclean extension exit). Without a deadline, every RPC in the
+	// startup storm hangs inside sendProviderMessage and the whole GUI stalls;
+	// with one, we degrade to the in-process fallback after 2s.
+	return try await withDeadline(seconds: 2.0) {
+		try await withCheckedThrowingContinuation { continuation in
+			do {
+				// Send the message to the provider and handle the response in the callback
+				try session.sendProviderMessage(messageData) { responseData in
+					if let responseData = responseData {
+						if let responseString = String(data: responseData, encoding: .utf8) {
+							continuation.resume(returning: responseString)
+						} else {
+							continuation.resume(throwing: "Failed to decode response data")
+						}
 					} else {
-						continuation.resume(throwing: "Failed to decode response data")
+						continuation.resume(throwing: "No response received from provider")
 					}
-				} else {
-					continuation.resume(throwing: "No response received from provider")
 				}
+			} catch {
+				continuation.resume(throwing: error)
 			}
-		} catch {
-			continuation.resume(throwing: error)
 		}
 	}
 }

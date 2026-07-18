@@ -125,15 +125,15 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 	}
 	
 	override func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-		completionHandler()
-		
-		// Add code here to start the process of stopping the tunnel.
-		let req = "{ jsonrpc: \"2.0\", method: \"stop\", params: [], id: 1 }"
+		// Tell the engine to stop BEFORE reporting completion; the process is
+		// torn down soon after the completion handler runs.
+		let req = "{\"jsonrpc\": \"2.0\", \"method\": \"stop\", \"params\": [], \"id\": 1}"
 		do {
 			let _ = try daemonRpc(req)
 		} catch {
 			logPublic("daemon_rpc(stop) failed with error = \(error.localizedDescription)", type: .error)
 		}
+		completionHandler()
 	}
 	
 	override func sleep(completionHandler: @escaping () -> Void) {
