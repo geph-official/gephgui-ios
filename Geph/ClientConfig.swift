@@ -78,7 +78,11 @@ func runningConfig(args: [String: Any], cacheDir: String? = nil) -> [String: Any
 	if let allowDirect = args["allow_direct"] as? Bool {
 		cfg["allow_direct"] = allowDirect
 	}
-	
+
+	if let allowLan = args["allow_lan"] as? Bool {
+		cfg["allow_lan"] = allowLan
+	}
+
 if let prcWhitelist = args["prc_whitelist"] as? Bool {
     cfg["passthrough_china"] = prcWhitelist
     cfg["spoof_dns"] = prcWhitelist

@@ -675,7 +675,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Geph/libGeph5Client";
-				MARKETING_VERSION = 5.7.1;
+				MARKETING_VERSION = 5.8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -721,7 +721,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Geph/libGeph5Client";
-				MARKETING_VERSION = 5.7.1;
+				MARKETING_VERSION = 5.8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -844,7 +844,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Geph/libGeph5Client",
 				);
-				MARKETING_VERSION = 5.7.1;
+				MARKETING_VERSION = 5.8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io.daemon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -880,7 +880,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Geph/libGeph5Client",
 				);
-				MARKETING_VERSION = 5.7.1;
+				MARKETING_VERSION = 5.8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = geph.io.daemon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
