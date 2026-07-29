@@ -148,7 +148,7 @@ supports_autoupdate: false,
 		const info = {
 			platform_type: "ios",
 			platform_details: ios_version,
-			version: "5.8.0",
+			version: "5.8.3",
 		};
 		console.log("get_native_info", info);
 		return info;

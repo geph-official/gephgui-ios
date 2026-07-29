@@ -83,10 +83,10 @@ func runningConfig(args: [String: Any], cacheDir: String? = nil) -> [String: Any
 		cfg["allow_lan"] = allowLan
 	}
 
-if let prcWhitelist = args["prc_whitelist"] as? Bool {
-    cfg["passthrough_china"] = prcWhitelist
-    cfg["spoof_dns"] = prcWhitelist
-}
+    if let prcWhitelist = args["prc_whitelist"] as? Bool {
+        cfg["passthrough_china"] = prcWhitelist
+        cfg["spoof_dns"] = prcWhitelist
+    }
 	
 	if let secret = args["secret"] as? String {
 		// Set cache directory

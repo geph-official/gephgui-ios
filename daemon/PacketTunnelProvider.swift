@@ -75,9 +75,19 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 		let subnetMasks: [String] = ["255.255.255.255"]
 		settings.ipv4Settings = NEIPv4Settings(addresses: addresses, subnetMasks: subnetMasks)
 		settings.ipv4Settings?.includedRoutes = [NEIPv4Route.default()]  // all routes
+
+		// Claim IPv6 too. Without an IPv6 default route, iOS keeps sending v6
+		// traffic out the physical interface (a leak), where it black-holes on
+		// networks with broken/censored v6 — apps that don't do Happy Eyeballs
+		// fallback (e.g. speedtests, ipv6.google.com) just hang. Routing v6 into
+		// the tunnel lets the engine dial it through the exit, or leave the SYN
+		// unanswered so the app falls back to IPv4 cleanly.
+		settings.ipv6Settings = NEIPv6Settings(addresses: ["fd00::1"], networkPrefixLengths: [64])
+		settings.ipv6Settings?.includedRoutes = [NEIPv6Route.default()]
+
 		settings.dnsSettings = .init(servers: ["1.1.1.1"])
 		settings.mtu = 1450
-		
+
 		setTunnelNetworkSettings(settings, completionHandler: completionHandler)
 	}
 	
